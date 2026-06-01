@@ -9,11 +9,10 @@ using System.Threading.Tasks;
 using MetroTrilithon.Mvvm;
 using System.Threading;
 using System.Runtime.CompilerServices;
-using Grabacr07.KanColleViewer.Infrastructure.Mvvm;
 
 namespace EventMapHpViewer.ViewModels.Settings
 {
-    public class BossSettingsViewModel: ViewModelBase
+    public class BossSettingsViewModel: ViewModel
     {
         #region IsEnabled
         private bool _IsEnabled;

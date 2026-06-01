@@ -6,14 +6,13 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using Grabacr07.KanColleViewer.Infrastructure.Mvvm;
 using MetroTrilithon.Mvvm;
 using StatefulModel;
 using EventMapHpViewer.Models.Settings;
 
 namespace EventMapHpViewer.ViewModels.Settings
 {
-    public class SettingsViewModel : ViewModelBase
+    public class SettingsViewModel : ViewModel
     {
         public BossSettingsViewModel BossSettings { get; }
         public TpSettingsViewModel TpSettings { get; }

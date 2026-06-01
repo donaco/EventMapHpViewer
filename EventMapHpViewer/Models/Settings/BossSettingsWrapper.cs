@@ -10,7 +10,7 @@ using MetroTrilithon.Mvvm;
 
 namespace EventMapHpViewer.Models.Settings
 {
-    class BossSettingsWrapper: Notifier
+    class BossSettingsWrapper: MetroTrilithon.Mvvm.Notifier
     {
         private ObservableSynchronizedCollection<BossSetting> _List;
         public ObservableSynchronizedCollection<BossSetting> List

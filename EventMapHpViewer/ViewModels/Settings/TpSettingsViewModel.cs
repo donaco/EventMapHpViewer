@@ -7,14 +7,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using Grabacr07.KanColleViewer.Infrastructure.Mvvm;
 using MetroTrilithon.Mvvm;
 using System.Threading;
 using Grabacr07.KanColleWrapper;
 
 namespace EventMapHpViewer.ViewModels.Settings
 {
-    public class TpSettingsViewModel: ViewModelBase
+    public class TpSettingsViewModel: ViewModel
     {
         #region IsEnabled
         private bool _IsEnabled;
