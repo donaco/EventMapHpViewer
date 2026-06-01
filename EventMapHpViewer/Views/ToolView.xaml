@@ -5,7 +5,6 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:EventMapHpViewer.ViewModels"
-             xmlns:l="http://schemas.livet-mvvm.net/2011/wpf"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:kanColleWrapper="clr-namespace:Grabacr07.KanColleWrapper;assembly=KanColleWrapper"
              xmlns:metro="http://schemes.grabacr.net/winfx/2014/controls"
@@ -22,12 +21,7 @@
                 <ResourceDictionary Source="../Styles/PluginStyle.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
-            <l:VisibilityAndBooleanConverter x:Key="TrueToVisibleConverter"
-                                             ConvertWhenTrue="Visible"
-                                             ConvertWhenFalse="Collapsed"/>
-            <l:VisibilityAndBooleanConverter x:Key="FalseToVisibleConverter"
-                                             ConvertWhenTrue="Collapsed"
-                                             ConvertWhenFalse="Visible"/>
+            <BooleanToVisibilityConverter x:Key="TrueToVisibleConverter" />
         </ResourceDictionary>
     </UserControl.Resources>
 
@@ -57,7 +51,7 @@
                     BorderBrush="{DynamicResource ActiveBorderBrushKey}">
                 <TextBlock Text="No Map"
                            VerticalAlignment="Center"
-                           Visibility="{Binding IsNoMap, Converter={StaticResource TrueToVisibleConverter}}"
+                           Visibility="{Binding IsNoMap, Converter={StaticResource TrueToVisibleConverter}, ConverterParameter=Visible:Collapsed}"
                            Margin="20"
                            d:IsHidden="True"/>
             </Border>
@@ -238,7 +232,7 @@
                                                HorizontalAlignment="Right"
                                                VerticalAlignment="Center"
                                                Margin="3,0,7,0"
-                                               Visibility="{Binding IsLoading, Converter={StaticResource TrueToVisibleConverter}}"
+                                               Visibility="{Binding IsLoading, Converter={StaticResource TrueToVisibleConverter}, ConverterParameter=Visible:Collapsed}"
                                                Style="{DynamicResource DefaultTextStyleKey}"
                                                Text="読込中"/>
 
@@ -268,7 +262,16 @@
                                           Grid.Row="0"
                                           Grid.RowSpan="2"
                                           Grid.ColumnSpan="2"
-                                          Visibility="{Binding IsRankSelected, Converter={StaticResource FalseToVisibleConverter}}">
+                                          Visibility="Visible">
+                                        <Grid.Style>
+                                            <Style TargetType="Grid">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding IsRankSelected}" Value="True">
+                                                        <Setter Property="Visibility" Value="Collapsed" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Grid.Style>
                                         <Border Background="{DynamicResource ThemeBrushKey}"
                                                 Margin="0" />
                                         <TextBlock Text="難易度を選択してください"

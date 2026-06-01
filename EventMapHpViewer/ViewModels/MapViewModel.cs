@@ -4,12 +4,12 @@ using System.Windows;
 using System.Windows.Media;
 using EventMapHpViewer.Models;
 using EventMapHpViewer.Models.Settings;
-using Livet;
+using Grabacr07.KanColleViewer.Infrastructure.Mvvm;
 using MetroTrilithon.Mvvm;
 
 namespace EventMapHpViewer.ViewModels
 {
-    public class MapViewModel : ViewModel
+    public class MapViewModel : ViewModelBase
     {
 
         private static readonly SolidColorBrush red;

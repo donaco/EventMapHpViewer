@@ -1,7 +1,6 @@
 ﻿using System.Linq;
 using EventMapHpViewer.Models;
-using Livet;
-using Livet.EventListeners;
+using Grabacr07.KanColleViewer.Infrastructure.Mvvm;
 using Grabacr07.KanColleWrapper;
 using MetroTrilithon.Mvvm;
 using System.Collections.Generic;
@@ -14,7 +13,7 @@ using EventMapHpViewer.Models.Settings;
 
 namespace EventMapHpViewer.ViewModels
 {
-    public class ToolViewModel : ViewModel
+    public class ToolViewModel : ViewModelBase
     {
         private readonly MapInfoProxy mapInfoProxy;
 

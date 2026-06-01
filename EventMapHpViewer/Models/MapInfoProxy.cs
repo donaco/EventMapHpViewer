@@ -6,13 +6,12 @@ using System.Reactive.Linq;
 using EventMapHpViewer.Models.Raw;
 using Grabacr07.KanColleWrapper;
 using Grabacr07.KanColleWrapper.Models;
-using Livet;
 using MetroTrilithon.Lifetime;
 using MetroTrilithon.Mvvm;
 
 namespace EventMapHpViewer.Models
 {
-    public class MapInfoProxy : NotificationObject, IDisposableHolder
+    public class MapInfoProxy : MetroTrilithon.Mvvm.Notifier, IDisposableHolder
     {
         #region Maps変更通知プロパティ
         private Maps _Maps;
@@ -54,7 +53,7 @@ namespace EventMapHpViewer.Models
                 {
                     Debug.WriteLine("MapInfoProxy - member_mapinfo");
                     this.Maps.MapList = this.CreateMapList(m.Data.api_map_info);
-                    this.RaisePropertyChanged(() => this.Maps);
+                    this.RaisePropertyChanged(nameof(this.Maps));
                 })
                 .AddTo(this);
 
@@ -65,7 +64,7 @@ namespace EventMapHpViewer.Models
                 {
                     Debug.WriteLine("MapInfoProxy - select_eventmap_rank");
                     this.Maps.MapList = this.UpdateRank(x);
-                    this.RaisePropertyChanged(() => this.Maps);
+                    this.RaisePropertyChanged(nameof(this.Maps));
                 })
                 .AddTo(this);
 
@@ -87,7 +86,7 @@ namespace EventMapHpViewer.Models
                     Debug.WriteLine("MapInfoProxy - map_start_next");
                     targetMap.Eventmap.NowMapHp = x.Data.api_eventmap.api_now_maphp;
                     targetMap.Eventmap.MaxMapHp = x.Data.api_eventmap.api_max_maphp;
-                    this.RaisePropertyChanged(() => this.Maps);
+                    this.RaisePropertyChanged(nameof(this.Maps));
                 })
                 .AddTo(this);
         }

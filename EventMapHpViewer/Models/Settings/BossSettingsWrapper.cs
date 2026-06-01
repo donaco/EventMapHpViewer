@@ -1,4 +1,4 @@
-﻿using Codeplex.Data;
+﻿using Newtonsoft.Json;
 using StatefulModel;
 using System;
 using System.Collections.Generic;
@@ -10,7 +10,7 @@ using MetroTrilithon.Mvvm;
 
 namespace EventMapHpViewer.Models.Settings
 {
-    class BossSettingsWrapper: Livet.NotificationObject
+    class BossSettingsWrapper: Notifier
     {
         private ObservableSynchronizedCollection<BossSetting> _List;
         public ObservableSynchronizedCollection<BossSetting> List
@@ -29,7 +29,7 @@ namespace EventMapHpViewer.Models.Settings
         {
             try
             {
-                BossSettingForParse[] parsed = DynamicJson.Parse(json);
+                var parsed = JsonConvert.DeserializeObject<BossSettingForParse[]>(json) ?? Array.Empty<BossSettingForParse>();
                 this.List = new ObservableSynchronizedCollection<BossSetting>(parsed.Select(x => x.ToValue()));
             }
             catch
@@ -86,6 +86,6 @@ namespace EventMapHpViewer.Models.Settings
     static class BossSettingsWrapperExtensions
     {
         public static void Save(this BossSettingsWrapper settings)
-            => MapHpSettings.BossSettings.Value = DynamicJson.Serialize(settings.List);
+            => MapHpSettings.BossSettings.Value = JsonConvert.SerializeObject(settings.List);
     }
 }

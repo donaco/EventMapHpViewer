@@ -1,6 +1,8 @@
-﻿namespace EventMapHpViewer.Models.Settings
+﻿using MetroTrilithon.Mvvm;
+
+namespace EventMapHpViewer.Models.Settings
 {
-    public class TpSetting: Livet.NotificationObject
+    public class TpSetting: Notifier
     {
         public int TypeId { get; set; }
         public string TypeName { get; set; }

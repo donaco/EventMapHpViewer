@@ -1,19 +1,20 @@
 ﻿using EventMapHpViewer.Models;
 using EventMapHpViewer.Models.Settings;
-using Livet;
 using StatefulModel;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using Grabacr07.KanColleViewer.Infrastructure.Mvvm;
 using MetroTrilithon.Mvvm;
 using System.Threading;
 using Grabacr07.KanColleWrapper;
 
 namespace EventMapHpViewer.ViewModels.Settings
 {
-    public class TpSettingsViewModel: ViewModel
+    public class TpSettingsViewModel: ViewModelBase
     {
         #region IsEnabled
         private bool _IsEnabled;
@@ -131,7 +132,7 @@ namespace EventMapHpViewer.ViewModels.Settings
             this.Settings = AutoCalcTpSettings.FromSettings;
 
             this.Settings.Subscribe(nameof(AutoCalcTpSettings.ShipTypeTp), () =>
-            DispatcherHelper.UIDispatcher.Invoke(() =>
+            Application.Current?.Dispatcher?.Invoke(() =>
             {
                 this.ShipTypeTpSettings = this.Settings.ShipTypeTp
                         .ToSyncedSynchronizationContextCollection(SynchronizationContext.Current)
@@ -141,7 +142,7 @@ namespace EventMapHpViewer.ViewModels.Settings
             .AddTo(this);
 
             this.Settings.Subscribe(nameof(AutoCalcTpSettings.SlotItemTp), () =>
-            DispatcherHelper.UIDispatcher.Invoke(() =>
+            Application.Current?.Dispatcher?.Invoke(() =>
             {
                 this.SlotItemTpSettings = this.Settings.SlotItemTp
                         .ToSyncedSynchronizationContextCollection(SynchronizationContext.Current)
@@ -151,7 +152,7 @@ namespace EventMapHpViewer.ViewModels.Settings
             .AddTo(this);
 
             this.Settings.Subscribe(nameof(AutoCalcTpSettings.ShipTp), () =>
-            DispatcherHelper.UIDispatcher.Invoke(() =>
+            Application.Current?.Dispatcher?.Invoke(() =>
             {
                 this.ShipTpSettings = this.Settings.ShipTp
                         .ToSyncedSynchronizationContextCollection(SynchronizationContext.Current)
