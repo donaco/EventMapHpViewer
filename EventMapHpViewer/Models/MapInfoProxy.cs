@@ -130,6 +130,8 @@ namespace EventMapHpViewer.Models
             if (targetMap?.Eventmap == null) return list;
 
             targetMap.Eventmap.SelectedRank = (Rank)rank;
+            if (targetMap.Eventmap.State == 1)
+                targetMap.Eventmap.State = 2;
             if (data.Data?.api_maphp != null)
             {
                 if (int.TryParse(data.Data.api_maphp.api_gauge_type, out var gaugeType))

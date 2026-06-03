@@ -5,7 +5,6 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:local="clr-namespace:EventMapHpViewer.Views.Settings"
-             xmlns:metro="http://schemes.grabacr.net/winfx/2014/controls"
              xmlns:m="clr-namespace:EventMapHpViewer.Models.Settings"
              xmlns:vm="clr-namespace:EventMapHpViewer.ViewModels.Settings"
              xmlns:controls="clr-namespace:EventMapHpViewer.Views.Controls"
@@ -119,9 +118,9 @@
                                 Width="{Binding TpColumnWidth, ElementName=root}">
                     <GridViewColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type m:TpSetting}">
-                            <metro:PromptTextBox Margin="-6,0">
-                                <metro:PromptTextBox.Style>
-                                    <Style TargetType="{x:Type metro:PromptTextBox}">
+                            <controls:PromptTextBox Margin="-6,0">
+                                <controls:PromptTextBox.Style>
+                                    <Style TargetType="{x:Type controls:PromptTextBox}">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Tp}"
                                                          Value="0">
@@ -130,16 +129,16 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </metro:PromptTextBox.Style>
-                                <metro:PromptTextBox.Text>
+                                </controls:PromptTextBox.Style>
+                                <controls:PromptTextBox.Text>
                                     <Binding Path="Tp"
                                              UpdateSourceTrigger="PropertyChanged">
                                         <Binding.ValidationRules>
                                             <controls:DecimalRule/>
                                         </Binding.ValidationRules>
                                     </Binding>
-                                </metro:PromptTextBox.Text>
-                            </metro:PromptTextBox>
+                                </controls:PromptTextBox.Text>
+                            </controls:PromptTextBox>
                         </DataTemplate>
                     </GridViewColumn.CellTemplate>
                 </GridViewColumn>

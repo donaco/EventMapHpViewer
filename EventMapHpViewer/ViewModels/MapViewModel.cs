@@ -339,9 +339,7 @@ namespace EventMapHpViewer.ViewModels
             this.IsCleared = info.IsCleared == 1;
             this.IsRankSelected = info.Eventmap == null
                 || info.Eventmap.SelectedRank != 0
-                || info.Eventmap.State != 1
-                || info.Eventmap.NowMapHp != 9999
-                || info.Eventmap.MaxMapHp != 9999;
+                || info.Eventmap.State != 1;
             this.GaugeType = info.GaugeType;
 
             this.GaugeColor = green;

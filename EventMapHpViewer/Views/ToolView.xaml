@@ -7,7 +7,6 @@
              xmlns:viewModels="clr-namespace:EventMapHpViewer.ViewModels"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:kanColleWrapper="clr-namespace:Grabacr07.KanColleWrapper;assembly=KanColleWrapper"
-             xmlns:metro="http://schemes.grabacr.net/winfx/2014/controls"
              Background="{DynamicResource ThemeBrushKey}"
              Foreground="{DynamicResource ActiveForegroundBrushKey}"
              mc:Ignorable="d" 
