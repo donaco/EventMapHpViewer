@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using EventMapHpViewer.Infrastructure.Mvvm;
-using StatefulModel;
 using EventMapHpViewer.Models.Settings;
 
 namespace EventMapHpViewer.ViewModels.Settings

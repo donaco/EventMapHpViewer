@@ -1,7 +1,7 @@
 ﻿using EventMapHpViewer.Models.Settings;
 using Grabacr07.KanColleWrapper;
-using StatefulModel;
 using System;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -197,8 +197,8 @@ namespace EventMapHpViewer.ViewModels.Settings
         #endregion
 
         #region BossSettings
-        private ReadOnlyNotifyChangedCollection<BossSetting> _BossSettings;
-        public ReadOnlyNotifyChangedCollection<BossSetting> BossSettings
+        private ObservableCollection<BossSetting> _BossSettings;
+        public ObservableCollection<BossSetting> BossSettings
         {
             get => this._BossSettings;
             set
@@ -232,10 +232,8 @@ namespace EventMapHpViewer.ViewModels.Settings
         {
             this.Settings = BossSettingsWrapper.FromSettings;
 
-            this.BossSettings = this.Settings.List
-                .ToSyncedSortedObservableCollection(x => $"{x.MapId:D4}{x.Rank:D2}{x.GaugeNum ?? 0:D2}{(x.IsLast ? 1 : 0)}{x.BossHP:D4}")
-                .ToSyncedSynchronizationContextCollection(SynchronizationContext.Current)
-                .ToSyncedReadOnlyNotifyChangedCollection();
+            this.BossSettings = new ObservableCollection<BossSetting>(
+                this.Settings.List.OrderBy(x => $"{x.MapId:D4}{x.Rank:D2}{x.GaugeNum ?? 0:D2}{(x.IsLast ? 1 : 0)}{x.BossHP:D4}"));
         }
 
         public void Add()

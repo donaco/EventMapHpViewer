@@ -1,7 +1,7 @@
 ﻿using EventMapHpViewer.Models;
 using EventMapHpViewer.Models.Settings;
-using StatefulModel;
 using System;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -77,9 +77,9 @@ namespace EventMapHpViewer.ViewModels.Settings
         #endregion
 
         #region ShipTypeTpSettings 変更通知プロパティ
-        private ReadOnlyNotifyChangedCollection<TpSetting> _ShipTypeTpSettings;
+        private ObservableCollection<TpSetting> _ShipTypeTpSettings;
 
-        public ReadOnlyNotifyChangedCollection<TpSetting> ShipTypeTpSettings
+        public ObservableCollection<TpSetting> ShipTypeTpSettings
         {
             get => this._ShipTypeTpSettings;
             set
@@ -93,9 +93,9 @@ namespace EventMapHpViewer.ViewModels.Settings
         #endregion
 
         #region SlotItemTpSettings 変更通知プロパティ
-        private ReadOnlyNotifyChangedCollection<TpSetting> _SlotItemTpSettings;
+        private ObservableCollection<TpSetting> _SlotItemTpSettings;
 
-        public ReadOnlyNotifyChangedCollection<TpSetting> SlotItemTpSettings
+        public ObservableCollection<TpSetting> SlotItemTpSettings
         {
             get => this._SlotItemTpSettings;
             set
@@ -109,9 +109,9 @@ namespace EventMapHpViewer.ViewModels.Settings
         #endregion
 
         #region ShipTpSettings 変更通知プロパティ
-        private ReadOnlyNotifyChangedCollection<TpSetting> _ShipTpSettings;
+        private ObservableCollection<TpSetting> _ShipTpSettings;
 
-        public ReadOnlyNotifyChangedCollection<TpSetting> ShipTpSettings
+        public ObservableCollection<TpSetting> ShipTpSettings
         {
             get => this._ShipTpSettings;
             set
@@ -133,30 +133,24 @@ namespace EventMapHpViewer.ViewModels.Settings
             this.Settings.Subscribe(nameof(AutoCalcTpSettings.ShipTypeTp), () =>
             Application.Current?.Dispatcher?.Invoke(() =>
             {
-                this.ShipTypeTpSettings = this.Settings.ShipTypeTp
-                        .ToSyncedSynchronizationContextCollection(SynchronizationContext.Current)
-                        .ToSyncedSortedObservableCollection(x => x.TypeId * 10000 + x.SortId)
-                        .ToSyncedReadOnlyNotifyChangedCollection();
+                this.ShipTypeTpSettings = new ObservableCollection<TpSetting>(
+                    this.Settings.ShipTypeTp.OrderBy(x => x.TypeId * 10000 + x.SortId));
             }))
             .AddTo(this.CompositeDisposable);
 
             this.Settings.Subscribe(nameof(AutoCalcTpSettings.SlotItemTp), () =>
             Application.Current?.Dispatcher?.Invoke(() =>
             {
-                this.SlotItemTpSettings = this.Settings.SlotItemTp
-                        .ToSyncedSynchronizationContextCollection(SynchronizationContext.Current)
-                        .ToSyncedSortedObservableCollection(x => x.TypeId * 10000 + x.SortId)
-                        .ToSyncedReadOnlyNotifyChangedCollection();
+                this.SlotItemTpSettings = new ObservableCollection<TpSetting>(
+                    this.Settings.SlotItemTp.OrderBy(x => x.TypeId * 10000 + x.SortId));
             }))
             .AddTo(this.CompositeDisposable);
 
             this.Settings.Subscribe(nameof(AutoCalcTpSettings.ShipTp), () =>
             Application.Current?.Dispatcher?.Invoke(() =>
             {
-                this.ShipTpSettings = this.Settings.ShipTp
-                        .ToSyncedSynchronizationContextCollection(SynchronizationContext.Current)
-                        .ToSyncedSortedObservableCollection(x => x.TypeId * 10000 + x.SortId)
-                        .ToSyncedReadOnlyNotifyChangedCollection();
+                this.ShipTpSettings = new ObservableCollection<TpSetting>(
+                    this.Settings.ShipTp.OrderBy(x => x.TypeId * 10000 + x.SortId));
             }))
             .AddTo(this.CompositeDisposable);
         }

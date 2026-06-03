@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using StatefulModel;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -12,8 +11,8 @@ namespace EventMapHpViewer.Models.Settings
 {
     class BossSettingsWrapper: Notifier
     {
-        private ObservableSynchronizedCollection<BossSetting> _List;
-        public ObservableSynchronizedCollection<BossSetting> List
+        private ObservableCollection<BossSetting> _List;
+        public ObservableCollection<BossSetting> List
         {
             get => this._List;
             private set
@@ -30,11 +29,11 @@ namespace EventMapHpViewer.Models.Settings
             try
             {
                 var parsed = JsonConvert.DeserializeObject<BossSettingForParse[]>(json) ?? Array.Empty<BossSettingForParse>();
-                this.List = new ObservableSynchronizedCollection<BossSetting>(parsed.Select(x => x.ToValue()));
+                this.List = new ObservableCollection<BossSetting>(parsed.Select(x => x.ToValue()));
             }
             catch
             {
-                this.List = new ObservableSynchronizedCollection<BossSetting>();
+                this.List = new ObservableCollection<BossSetting>();
             }
         }
 

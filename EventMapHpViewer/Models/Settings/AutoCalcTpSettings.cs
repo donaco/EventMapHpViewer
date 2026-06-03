@@ -9,7 +9,6 @@ using Grabacr07.KanColleWrapper;
 using Newtonsoft.Json;
 using Grabacr07.KanColleWrapper.Models;
 using Grabacr07.KanColleWrapper.Models.Raw;
-using StatefulModel;
 using EventMapHpViewer.Infrastructure.Mvvm;
 
 namespace EventMapHpViewer.Models.Settings
@@ -18,8 +17,8 @@ namespace EventMapHpViewer.Models.Settings
     {
         #region ShipTypeTp
 
-        private ObservableSynchronizedCollection<TpSetting> _ShipTypeTp;
-        public ObservableSynchronizedCollection<TpSetting> ShipTypeTp
+        private ObservableCollection<TpSetting> _ShipTypeTp;
+        public ObservableCollection<TpSetting> ShipTypeTp
         {
             get => this._ShipTypeTp;
             private set
@@ -35,8 +34,8 @@ namespace EventMapHpViewer.Models.Settings
 
         #region SlotItemTp
 
-        private ObservableSynchronizedCollection<TpSetting> _SlotItemTp;
-        public ObservableSynchronizedCollection<TpSetting> SlotItemTp
+        private ObservableCollection<TpSetting> _SlotItemTp;
+        public ObservableCollection<TpSetting> SlotItemTp
         {
             get => this._SlotItemTp;
             private set
@@ -52,8 +51,8 @@ namespace EventMapHpViewer.Models.Settings
 
         #region ShipTp
 
-        private ObservableSynchronizedCollection<TpSetting> _ShipTp;
-        public ObservableSynchronizedCollection<TpSetting> ShipTp
+        private ObservableCollection<TpSetting> _ShipTp;
+        public ObservableCollection<TpSetting> ShipTp
         {
             get => this._ShipTp;
             private set
@@ -79,30 +78,30 @@ namespace EventMapHpViewer.Models.Settings
             try
             {
                 var parsed = JsonConvert.DeserializeObject<TpSetting[]>(stypeTp);
-                this.ShipTypeTp = new ObservableSynchronizedCollection<TpSetting>(new ObservableCollection<TpSetting>(parsed ?? Array.Empty<TpSetting>()));
+                this.ShipTypeTp = new ObservableCollection<TpSetting>(parsed ?? Array.Empty<TpSetting>());
             }
             catch { this.ShipTypeTp = Default.ShipTypeTp; }
 
             try
             {
                 var parsed = JsonConvert.DeserializeObject<TpSetting[]>(slotitemTp);
-                this.SlotItemTp = new ObservableSynchronizedCollection<TpSetting>(new ObservableCollection<TpSetting>(parsed ?? Array.Empty<TpSetting>()));
+                this.SlotItemTp = new ObservableCollection<TpSetting>(parsed ?? Array.Empty<TpSetting>());
             }
             catch { this.SlotItemTp = Default.SlotItemTp; }
 
             try
             {
                 var parsed = JsonConvert.DeserializeObject<TpSetting[]>(shipTp);
-                this.ShipTp = new ObservableSynchronizedCollection<TpSetting>(new ObservableCollection<TpSetting>(parsed ?? Array.Empty<TpSetting>()));
+                this.ShipTp = new ObservableCollection<TpSetting>(parsed ?? Array.Empty<TpSetting>());
             }
             catch { this.ShipTp = Default.ShipTp; }
         }
 
         private AutoCalcTpSettings(IEnumerable<TpSetting> stypeTp, IEnumerable<TpSetting> slotitemTp, IEnumerable<TpSetting> shipTp)
         {
-            this.ShipTypeTp = new ObservableSynchronizedCollection<TpSetting>(new ObservableCollection<TpSetting>(stypeTp));
-            this.SlotItemTp = new ObservableSynchronizedCollection<TpSetting>(new ObservableCollection<TpSetting>(slotitemTp));
-            this.ShipTp = new ObservableSynchronizedCollection<TpSetting>(new ObservableCollection<TpSetting>(shipTp));
+            this.ShipTypeTp = new ObservableCollection<TpSetting>(stypeTp);
+            this.SlotItemTp = new ObservableCollection<TpSetting>(slotitemTp);
+            this.ShipTp = new ObservableCollection<TpSetting>(shipTp);
         }
 
         public void RestoreDefault()
@@ -204,7 +203,7 @@ namespace EventMapHpViewer.Models.Settings
             settings.RestoreDefault();
         }
 
-        public static ObservableSynchronizedCollection<TpSetting> UpdateSettings<T>(this MasterTable<T> master,
+        public static ObservableCollection<TpSetting> UpdateSettings<T>(this MasterTable<T> master,
             IEnumerable<TpSetting> oldSettings,
             Func<T, bool> filter,
             Func<T, TpSetting> selector)
@@ -226,7 +225,7 @@ namespace EventMapHpViewer.Models.Settings
                     newTps.Add(oldTp.Id, oldTp);
                 }
             }
-            return new ObservableSynchronizedCollection<TpSetting>(new ObservableCollection<TpSetting>(newTps.Select(x => x.Value)));
+            return new ObservableCollection<TpSetting>(newTps.Select(x => x.Value));
         }
     }
 }
