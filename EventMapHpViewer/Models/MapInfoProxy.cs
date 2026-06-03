@@ -7,7 +7,6 @@ using System.Reactive.Linq;
 using EventMapHpViewer.Models.Raw;
 using Grabacr07.KanColleWrapper;
 using Grabacr07.KanColleWrapper.Models;
-using MetroTrilithon.Lifetime;
 using EventMapHpViewer.Infrastructure.Mvvm;
 
 namespace EventMapHpViewer.Models

@@ -85,14 +85,6 @@
       <HintPath>$(SolutionDir)packages\MetroRadiance.Core.2.4.0\lib\net46\MetroRadiance.Core.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="MetroTrilithon, Version=0.2.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>$(SolutionDir)packages\MetroTrilithon.0.2.0\lib\portable-net45+win+wp80+MonoAndroid10+xamarinios10+MonoTouch10\MetroTrilithon.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
-    <Reference Include="MetroTrilithon.Desktop, Version=0.2.3.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>$(SolutionDir)packages\MetroTrilithon.Desktop.0.2.3\lib\net46\MetroTrilithon.Desktop.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="StatefulModel, Version=0.5.0.0, Culture=neutral, processorArchitecture=MSIL">
@@ -129,6 +121,7 @@
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
+    <Reference Include="System.Configuration" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Annotations\DarkAttribute.cs" />
@@ -261,5 +254,10 @@ xcopy /Y "$(TargetPath)" "$(SolutionDir)Grabacr07.KanColleViewer\bin\x64\$(Confi
       <Project>{0BC8CF79-76D9-46AD-867F-FEC6C6AD4594}</Project>
       <Name>KanColleWrapper</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\..\KanColleViewer\source\Grabacr07.KanColleViewer\Infrastructure\Serialization\MetroTrilithonSerialization.cs">
+      <Link>Infrastructure\Serialization\MetroTrilithonSerialization.cs</Link>
+    </Compile>
   </ItemGroup>
 </Project>
