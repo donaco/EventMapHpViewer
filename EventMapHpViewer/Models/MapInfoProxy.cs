@@ -72,8 +72,9 @@ namespace EventMapHpViewer.Models
                 .Subscribe(x =>
                 {
                     if (x.Data.api_eventmap == null) return;
-                    var targetMap = this.Maps.MapList
-                                        .FirstOrDefault(m => m.Id.ToString() == x.Data.api_maparea_id.ToString() + x.Data.api_mapinfo_no.ToString());
+                    var list = this.Maps.MapList ?? Array.Empty<MapData>();
+                    var targetId = x.Data.api_maparea_id * 10 + x.Data.api_mapinfo_no;
+                    var targetMap = list.FirstOrDefault(m => m.Id == targetId);
                     if (targetMap?.Eventmap == null) return;
 
                     if (targetMap.Eventmap.MaxMapHp.HasValue
@@ -83,6 +84,8 @@ namespace EventMapHpViewer.Models
                     Debug.WriteLine("MapInfoProxy - map_start_next");
                     targetMap.Eventmap.NowMapHp = x.Data.api_eventmap.api_now_maphp;
                     targetMap.Eventmap.MaxMapHp = x.Data.api_eventmap.api_max_maphp;
+                    if (targetMap.Eventmap.State == 1)
+                        targetMap.Eventmap.State = 2;
                     this.RaisePropertyChanged(nameof(this.Maps));
                 })
                 .AddTo(this.compositeDisposable);
@@ -115,19 +118,26 @@ namespace EventMapHpViewer.Models
         {
             var rank = 0;
             int.TryParse(data.Request["api_rank"], out rank);
-            var areaId = data.Request["api_maparea_id"];
-            var mapNo = data.Request["api_map_no"];
 
+            var areaIdRaw = data.Request["api_maparea_id"];
+            var mapNoRaw = data.Request["api_map_no"] ?? data.Request["api_mapinfo_no"];
+            if (!int.TryParse(areaIdRaw, out var areaId) || !int.TryParse(mapNoRaw, out var mapNo))
+                return this.Maps.MapList;
 
-            var list = this.Maps.MapList;
-            var targetMap = list.FirstOrDefault(m => m.Id.ToString() == areaId + mapNo);
+            var targetId = areaId * 10 + mapNo;
+            var list = this.Maps.MapList ?? Array.Empty<MapData>();
+            var targetMap = list.FirstOrDefault(m => m.Id == targetId);
             if (targetMap?.Eventmap == null) return list;
 
-            targetMap.Eventmap.SelectedRank = (Rank) rank;
-            if(int.TryParse(data.Data.api_maphp.api_gauge_type, out var gaugeType))
-                targetMap.GaugeType = (GaugeType) gaugeType;
-            targetMap.Eventmap.MaxMapHp = data.Data.api_maphp.api_max_maphp;
-            targetMap.Eventmap.NowMapHp = data.Data.api_maphp.api_now_maphp;
+            targetMap.Eventmap.SelectedRank = (Rank)rank;
+            if (data.Data?.api_maphp != null)
+            {
+                if (int.TryParse(data.Data.api_maphp.api_gauge_type, out var gaugeType))
+                    targetMap.GaugeType = (GaugeType)gaugeType;
+                targetMap.GaugeNum = data.Data.api_maphp.api_gauge_num;
+                targetMap.Eventmap.MaxMapHp = data.Data.api_maphp.api_max_maphp;
+                targetMap.Eventmap.NowMapHp = data.Data.api_maphp.api_now_maphp;
+            }
             return list;
         }
 

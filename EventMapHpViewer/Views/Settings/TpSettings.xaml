@@ -6,8 +6,8 @@
              xmlns:v="clr-namespace:EventMapHpViewer.Views.Settings"
              xmlns:m="clr-namespace:EventMapHpViewer.Models.Settings"
              xmlns:vm="clr-namespace:EventMapHpViewer.ViewModels.Settings"
-             xmlns:metro="http://schemes.grabacr.net/winfx/2014/controls"
-             xmlns:metro2="http://schemes.grabacr.net/winfx/2015/personal/controls"
+             xmlns:controls="clr-namespace:EventMapHpViewer.Views.Controls"
+             xmlns:metro2="clr-namespace:MetroTrilithon.UI.Controls;assembly=KanColleViewer.Controls"
              mc:Ignorable="d" 
              d:DesignHeight="370"
              d:DesignWidth="635"
@@ -62,16 +62,16 @@
                                 Margin="4,0">
                         <TextBlock Text="S:"
                                    Style="{DynamicResource DefaultTextStyleKey}"/>
-                        <metro:PromptTextBox>
-                            <metro:PromptTextBox.Text>
+                        <controls:PromptTextBox>
+                            <controls:PromptTextBox.Text>
                                 <Binding Path="TransportCapacityS"
                                          UpdateSourceTrigger="PropertyChanged">
                                     <Binding.ValidationRules>
-                                        <metro:Int32Rule Min="0"/>
+                                        <controls:Int32Rule Min="0"/>
                                     </Binding.ValidationRules>
                                 </Binding>
-                            </metro:PromptTextBox.Text>
-                        </metro:PromptTextBox>
+                            </controls:PromptTextBox.Text>
+                        </controls:PromptTextBox>
                     </StackPanel>
                     <TextBlock Margin="4,0">
                         <Run Text="A:"
