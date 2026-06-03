@@ -1,4 +1,4 @@
-﻿using MetroTrilithon.Mvvm;
+﻿using EventMapHpViewer.Infrastructure.Mvvm;
 
 namespace EventMapHpViewer.Models.Settings
 {

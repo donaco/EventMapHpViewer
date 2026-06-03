@@ -10,11 +10,11 @@ using Newtonsoft.Json;
 using Grabacr07.KanColleWrapper.Models;
 using Grabacr07.KanColleWrapper.Models.Raw;
 using StatefulModel;
-using MetroTrilithon.Mvvm;
+using EventMapHpViewer.Infrastructure.Mvvm;
 
 namespace EventMapHpViewer.Models.Settings
 {
-    class AutoCalcTpSettings : MetroTrilithon.Mvvm.Notifier
+    class AutoCalcTpSettings : EventMapHpViewer.Infrastructure.Mvvm.Notifier
     {
         #region ShipTypeTp
 

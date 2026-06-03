@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
-using MetroTrilithon.Mvvm;
+using EventMapHpViewer.Infrastructure.Mvvm;
 using System.Threading;
 using Grabacr07.KanColleWrapper;
 
@@ -138,7 +138,7 @@ namespace EventMapHpViewer.ViewModels.Settings
                         .ToSyncedSortedObservableCollection(x => x.TypeId * 10000 + x.SortId)
                         .ToSyncedReadOnlyNotifyChangedCollection();
             }))
-            .AddTo(this);
+            .AddTo(this.CompositeDisposable);
 
             this.Settings.Subscribe(nameof(AutoCalcTpSettings.SlotItemTp), () =>
             Application.Current?.Dispatcher?.Invoke(() =>
@@ -148,7 +148,7 @@ namespace EventMapHpViewer.ViewModels.Settings
                         .ToSyncedSortedObservableCollection(x => x.TypeId * 10000 + x.SortId)
                         .ToSyncedReadOnlyNotifyChangedCollection();
             }))
-            .AddTo(this);
+            .AddTo(this.CompositeDisposable);
 
             this.Settings.Subscribe(nameof(AutoCalcTpSettings.ShipTp), () =>
             Application.Current?.Dispatcher?.Invoke(() =>
@@ -158,7 +158,7 @@ namespace EventMapHpViewer.ViewModels.Settings
                         .ToSyncedSortedObservableCollection(x => x.TypeId * 10000 + x.SortId)
                         .ToSyncedReadOnlyNotifyChangedCollection();
             }))
-            .AddTo(this);
+            .AddTo(this.CompositeDisposable);
         }
 
         public void Save()

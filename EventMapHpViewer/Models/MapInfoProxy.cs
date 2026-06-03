@@ -2,17 +2,19 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using EventMapHpViewer.Models.Raw;
 using Grabacr07.KanColleWrapper;
 using Grabacr07.KanColleWrapper.Models;
 using MetroTrilithon.Lifetime;
-using MetroTrilithon.Mvvm;
+using EventMapHpViewer.Infrastructure.Mvvm;
 
 namespace EventMapHpViewer.Models
 {
-    public class MapInfoProxy : MetroTrilithon.Mvvm.Notifier, IDisposableHolder
+    public class MapInfoProxy : EventMapHpViewer.Infrastructure.Mvvm.Notifier, IDisposable
     {
+        private readonly CompositeDisposable compositeDisposable = new CompositeDisposable();
         #region Maps変更通知プロパティ
         private Maps _Maps;
 
@@ -36,18 +38,16 @@ namespace EventMapHpViewer.Models
 
             var proxy = KanColleClient.Current.Proxy;
 
-            proxy.ApiSessionSource
-                .Where(s => s.Request.PathAndQuery == "/kcsapi/api_start2/getData")
+            proxy.api_start2_getData
                 .TryParse<kcsapi_start2>()
                 .Subscribe(x =>
                 {
                     Maps.MapAreas = new MasterTable<MapArea>(x.Data.api_mst_maparea.Select(m => new MapArea(m)));
                     Maps.MapInfos = new MasterTable<MapInfo>(x.Data.api_mst_mapinfo.Select(m => new MapInfo(m, Maps.MapAreas)));
                 })
-                .AddTo(this);
+                .AddTo(this.compositeDisposable);
 
-            proxy.ApiSessionSource
-                .Where(s => s.Request.PathAndQuery == "/kcsapi/api_get_member/mapinfo")
+            proxy.api_get_member_mapinfo
                 .TryParse<mapinfo>()
                 .Subscribe(m =>
                 {
@@ -55,10 +55,9 @@ namespace EventMapHpViewer.Models
                     this.Maps.MapList = this.CreateMapList(m.Data.api_map_info);
                     this.RaisePropertyChanged(nameof(this.Maps));
                 })
-                .AddTo(this);
+                .AddTo(this.compositeDisposable);
 
-            proxy.ApiSessionSource
-                .Where(s => s.Request.PathAndQuery == "/kcsapi/api_req_map/select_eventmap_rank")
+            proxy.api_req_map_select_eventmap_rank
                 .TryParse<map_select_eventmap_rank>()
                 .Subscribe(x =>
                 {
@@ -66,11 +65,10 @@ namespace EventMapHpViewer.Models
                     this.Maps.MapList = this.UpdateRank(x);
                     this.RaisePropertyChanged(nameof(this.Maps));
                 })
-                .AddTo(this);
+                .AddTo(this.compositeDisposable);
 
 
-            proxy.ApiSessionSource
-                .Where(x => x.Request.PathAndQuery == "/kcsapi/api_req_map/start")
+            proxy.api_req_map_start
                 .TryParse<map_start_next>()
                 .Subscribe(x =>
                 {
@@ -88,7 +86,7 @@ namespace EventMapHpViewer.Models
                     targetMap.Eventmap.MaxMapHp = x.Data.api_eventmap.api_max_maphp;
                     this.RaisePropertyChanged(nameof(this.Maps));
                 })
-                .AddTo(this);
+                .AddTo(this.compositeDisposable);
         }
 
         private MapData[] CreateMapList(IEnumerable<member_mapinfo> maps)
@@ -114,7 +112,7 @@ namespace EventMapHpViewer.Models
                 }).ToArray();
         }
 
-        private MapData[] UpdateRank(SvData<map_select_eventmap_rank> data)
+        private MapData[] UpdateRank(Grabacr07.KanColleWrapper.SvData<map_select_eventmap_rank> data)
         {
             var rank = 0;
             int.TryParse(data.Request["api_rank"], out rank);
@@ -134,49 +132,10 @@ namespace EventMapHpViewer.Models
             return list;
         }
 
-        ICollection<IDisposable> IDisposableHolder.CompositeDisposable { get; }
-            = new ObservableSynchronizedCollection<IDisposable>();
-
-        #region IDisposable Support
-        private bool disposedValue = false; // 重複する呼び出しを検出するには
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposedValue)
-            {
-                if (disposing)
-                {
-                    // TODO: マネージド状態を破棄します (マネージド オブジェクト)。
-                    lock (this)
-                    {
-                        foreach (var disposable in ((IDisposableHolder)this).CompositeDisposable)
-                        {
-                            disposable.Dispose();
-                        }
-                    }
-                }
-
-                // TODO: アンマネージド リソース (アンマネージド オブジェクト) を解放し、下のファイナライザーをオーバーライドします。
-                // TODO: 大きなフィールドを null に設定します。
-
-                disposedValue = true;
-            }
-        }
-
-        // TODO: 上の Dispose(bool disposing) にアンマネージド リソースを解放するコードが含まれる場合にのみ、ファイナライザーをオーバーライドします。
-        // ~MapInfoProxy() {
-        //   // このコードを変更しないでください。クリーンアップ コードを上の Dispose(bool disposing) に記述します。
-        //   Dispose(false);
-        // }
-
-        // このコードは、破棄可能なパターンを正しく実装できるように追加されました。
         public void Dispose()
         {
-            // このコードを変更しないでください。クリーンアップ コードを上の Dispose(bool disposing) に記述します。
-            Dispose(true);
-            // TODO: 上のファイナライザーがオーバーライドされる場合は、次の行のコメントを解除してください。
-            // GC.SuppressFinalize(this);
+            this.compositeDisposable.Dispose();
+            GC.SuppressFinalize(this);
         }
-        #endregion
     }
 }

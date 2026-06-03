@@ -4,7 +4,7 @@ using System.Windows;
 using System.Windows.Media;
 using EventMapHpViewer.Models;
 using EventMapHpViewer.Models.Settings;
-using MetroTrilithon.Mvvm;
+using EventMapHpViewer.Infrastructure.Mvvm;
 
 namespace EventMapHpViewer.ViewModels
 {

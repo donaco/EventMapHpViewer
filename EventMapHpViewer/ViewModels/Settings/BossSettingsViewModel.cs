@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MetroTrilithon.Mvvm;
+using EventMapHpViewer.Infrastructure.Mvvm;
 using System.Threading;
 using System.Runtime.CompilerServices;
 

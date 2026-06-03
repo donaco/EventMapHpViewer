@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
-using MetroTrilithon.Mvvm;
+using EventMapHpViewer.Infrastructure.Mvvm;
 using StatefulModel;
 using EventMapHpViewer.Models.Settings;
 
@@ -28,7 +28,7 @@ namespace EventMapHpViewer.ViewModels.Settings
             KanColleClient.Current.Subscribe(nameof(KanColleClient.Current.IsStarted), () =>
             Application.Current?.Dispatcher?.Invoke(this.Initialize)
             , false)
-            .AddTo(this);
+            .AddTo(this.CompositeDisposable);
         }
 
         private void Initialize()

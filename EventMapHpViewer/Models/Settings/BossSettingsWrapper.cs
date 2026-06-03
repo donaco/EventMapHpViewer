@@ -6,11 +6,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MetroTrilithon.Mvvm;
+using EventMapHpViewer.Infrastructure.Mvvm;
 
 namespace EventMapHpViewer.Models.Settings
 {
-    class BossSettingsWrapper: MetroTrilithon.Mvvm.Notifier
+    class BossSettingsWrapper: Notifier
     {
         private ObservableSynchronizedCollection<BossSetting> _List;
         public ObservableSynchronizedCollection<BossSetting> List

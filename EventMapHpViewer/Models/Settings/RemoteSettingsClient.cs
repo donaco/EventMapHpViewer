@@ -138,36 +138,9 @@ namespace EventMapHpViewer.Models.Settings
         /// <returns></returns>
         private static HttpClientHandler GetProxyConfiguredHandler()
         {
-            var settings = KanColleClient.Current.Proxy.UpstreamProxySettings;
-
-            switch (settings.Type)
-            {
-                case ProxyType.DirectAccess:
-                    return new HttpClientHandler
-                    {
-                        UseProxy = false,
-                    };
-
-                case ProxyType.SpecificProxy:
-                    var host = settings.IsUseHttpProxyForAllProtocols ? settings.HttpHost : settings.HttpsHost;
-                    var port = settings.IsUseHttpProxyForAllProtocols ? settings.HttpPort : settings.HttpsPort;
-                    if (string.IsNullOrWhiteSpace(host))
-                    {
-                        return new HttpClientHandler { UseProxy = false };
-                    }
-
-                    return new HttpClientHandler
-                    {
-                        UseProxy = true,
-                        Proxy = new WebProxy($"{host}:{port}"),
-                    };
-
-                case ProxyType.SystemProxy:
-                    return new HttpClientHandler();
-
-                default:
-                    return new HttpClientHandler();
-            }
+            // KanColleViewer 内製 KanColleProxy では UpstreamProxySettings を公開しないため、
+            // ここではシステム既定プロキシ設定に委譲する。
+            return new HttpClientHandler();
         }
 
         public static string BuildBossSettingsUrl(string url, int id, int rank, int gaugeNum)

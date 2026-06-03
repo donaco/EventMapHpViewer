@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using EventMapHpViewer.Models;
 using Grabacr07.KanColleWrapper;
-using MetroTrilithon.Mvvm;
+using EventMapHpViewer.Infrastructure.Mvvm;
 using System.Collections.Generic;
 using Grabacr07.KanColleWrapper.Models;
 using System;
@@ -36,22 +36,22 @@ namespace EventMapHpViewer.ViewModels
                         .ToArray();
                     this.IsNoMap = !this.Maps.Any();
                 }, false)
-                .AddTo(this);
+                .AddTo(this.CompositeDisposable);
 
             KanColleClient.Current
                 .Subscribe(nameof(KanColleClient.IsStarted), Initialize, false)
-                .AddTo(this);
+                .AddTo(this.CompositeDisposable);
 
-            MapHpSettings.UseLocalBossSettings.Subscribe(_ => this.UpdateRemainingCount()).AddTo(this);
-            MapHpSettings.BossSettings.Subscribe(_ => this.UpdateRemainingCount()).AddTo(this);
+            MapHpSettings.UseLocalBossSettings.Subscribe(_ => this.UpdateRemainingCount()).AddTo(this.CompositeDisposable);
+            MapHpSettings.BossSettings.Subscribe(_ => this.UpdateRemainingCount()).AddTo(this.CompositeDisposable);
             // RemoteBossSettingsUrl は文字入力の度にリクエスト飛ぶようになるのは現実的ではないので、変更検知しない
             //MapHpSettings.RemoteBossSettingsUrl.Subscribe(_ => this.UpdateRemainingCount()).AddTo(this);
 
-            MapHpSettings.UseAutoCalcTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);
-            MapHpSettings.TransportCapacityS.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);
-            MapHpSettings.ShipTypeTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);
-            MapHpSettings.SlotItemTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);
-            MapHpSettings.ShipTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);
+            MapHpSettings.UseAutoCalcTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this.CompositeDisposable);
+            MapHpSettings.TransportCapacityS.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this.CompositeDisposable);
+            MapHpSettings.ShipTypeTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this.CompositeDisposable);
+            MapHpSettings.SlotItemTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this.CompositeDisposable);
+            MapHpSettings.ShipTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this.CompositeDisposable);
         }
 
         public void Initialize()
@@ -60,9 +60,8 @@ namespace EventMapHpViewer.ViewModels
                 .Subscribe(nameof(Organization.Fleets), this.UpdateFleets, false)
                 .Subscribe(nameof(Organization.Combined), this.UpdateTransportCapacity, false)
                 .Subscribe(nameof(Organization.Ships), () => this.handledShips.Clear(), false)
-                .AddTo(this);
-            KanColleClient.Current.Proxy.ApiSessionSource
-                .Where(s => s.Request.PathAndQuery == "/kcsapi/api_req_map/next")
+                .AddTo(this.CompositeDisposable);
+            KanColleClient.Current.Proxy.api_req_map_next
                 .TryParse<map_start_next>()
                 .Subscribe(x =>
                 {
@@ -72,7 +71,7 @@ namespace EventMapHpViewer.ViewModels
                         this.fixedTransportCapacity = true;
                     }
                 })
-                .AddTo(this);
+                .AddTo(this.CompositeDisposable);
             KanColleClient.Current.Proxy.api_port
                 .Subscribe(_ =>
                 {
@@ -83,7 +82,7 @@ namespace EventMapHpViewer.ViewModels
                     }
                     this.UpdateTransportCapacity();
                 })
-                .AddTo(this);
+                .AddTo(this.CompositeDisposable);
         }
 
         #region Maps変更通知プロパティ
