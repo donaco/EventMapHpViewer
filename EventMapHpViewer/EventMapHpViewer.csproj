@@ -119,7 +119,9 @@
     <Compile Include="Views\Controls\BossSettingsUrlRule.cs" />
     <Compile Include="Views\Controls\Int32Rule.cs" />
     <Compile Include="Views\Controls\PromptComboBox.cs" />
-    <Compile Include="Views\Controls\PromptTextBox.cs" />
+    <Compile Include="Views\Controls\PromptTextBox.cs" />    <Compile Include="Views\ToolViewWindow.xaml.cs">
+      <DependentUpon>ToolViewWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\SettingsView.xaml.cs">
       <DependentUpon>SettingsView.xaml</DependentUpon>
     </Compile>
@@ -140,6 +142,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Styles\PluginStyle.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\ToolViewWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

@@ -94,23 +94,32 @@ namespace EventMapHpViewer.Models
         private MapData[] CreateMapList(IEnumerable<member_mapinfo> maps)
         {
             return maps
-                .Select(x => new MapData
+                .Select(x =>
                 {
-                    IsCleared = x.api_defeat_count.HasValue ? 0 : x.api_cleared,
-                    DefeatCount = x.api_defeat_count ?? 0,
-                    RequiredDefeatCount = x.api_required_defeat_count ?? 0,
-                    Id = x.api_id,
-                    Eventmap = x.api_eventmap != null
-                        ? new Eventmap
-                        {
-                            MaxMapHp = x.api_eventmap.api_max_maphp,
-                            NowMapHp = x.api_eventmap.api_now_maphp,
-                            SelectedRank = (Rank) x.api_eventmap.api_selected_rank,
-                            State = x.api_eventmap.api_state,
-                        }
-                        : null,
-                    GaugeType = (GaugeType)(x.api_gauge_type ?? 0),
-                    GaugeNum = x.api_gauge_num,
+                    var requiredDefeatCount = Math.Max(0, x.api_required_defeat_count ?? 0);
+                    var defeatCount = Math.Max(0, x.api_defeat_count ?? 0);
+
+                    if (requiredDefeatCount > 0 && defeatCount > requiredDefeatCount)
+                        defeatCount = requiredDefeatCount;
+
+                    return new MapData
+                    {
+                        IsCleared = x.api_defeat_count.HasValue ? 0 : x.api_cleared,
+                        DefeatCount = defeatCount,
+                        RequiredDefeatCount = requiredDefeatCount,
+                        Id = x.api_id,
+                        Eventmap = x.api_eventmap != null
+                            ? new Eventmap
+                            {
+                                MaxMapHp = x.api_eventmap.api_max_maphp,
+                                NowMapHp = x.api_eventmap.api_now_maphp,
+                                SelectedRank = (Rank)x.api_eventmap.api_selected_rank,
+                                State = x.api_eventmap.api_state,
+                            }
+                            : null,
+                        GaugeType = (GaugeType)(x.api_gauge_type ?? 0),
+                        GaugeNum = x.api_gauge_num,
+                    };
                 }).ToArray();
         }
 

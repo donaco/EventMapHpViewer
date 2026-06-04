@@ -8,13 +8,46 @@ using System;
 using System.Reactive.Linq;
 using EventMapHpViewer.Models.Raw;
 using System.Diagnostics;
+using System.Windows;
 using EventMapHpViewer.Models.Settings;
+using EventMapHpViewer.Views;
 
 namespace EventMapHpViewer.ViewModels
 {
     public class ToolViewModel : ViewModel
     {
         private readonly MapInfoProxy mapInfoProxy;
+        private ToolViewWindow popupWindow;
+
+        #region IsTopMost変更通知プロパティ
+        private bool _IsTopMost = true;
+
+        public bool IsTopMost
+        {
+            get => this._IsTopMost;
+            set
+            {
+                if (this._IsTopMost == value) return;
+                this._IsTopMost = value;
+                this.RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+        #region IsPopupMode変更通知プロパティ
+        private bool _IsPopupMode;
+
+        public bool IsPopupMode
+        {
+            get => this._IsPopupMode;
+            set
+            {
+                if (this._IsPopupMode == value) return;
+                this._IsPopupMode = value;
+                this.RaisePropertyChanged();
+            }
+        }
+        #endregion
 
         public ToolViewModel(MapInfoProxy proxy)
         {
@@ -187,6 +220,52 @@ namespace EventMapHpViewer.ViewModels
             foreach (var map in this.Maps)
             {
                 map.UpdateRemainingCount();
+            }
+        }
+
+        public void OpenPopupWindow()
+        {
+            try
+            {
+                if (this.popupWindow != null && this.popupWindow.IsLoaded)
+                {
+                    this.popupWindow.Activate();
+                    return;
+                }
+
+                this.IsPopupMode = true;
+                this.popupWindow = new ToolViewWindow
+                {
+                    DataContext = this,
+                };
+                this.popupWindow.Closed += (s, e) =>
+                {
+                    this.IsPopupMode = false;
+                    this.popupWindow = null;
+                };
+                this.popupWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ToolViewWindow] ポップアップ表示に失敗: {ex}");
+                this.IsPopupMode = false;
+                this.popupWindow = null;
+            }
+        }
+
+        public void ClosePopupWindow()
+        {
+            try
+            {
+                if (this.popupWindow != null && this.popupWindow.IsLoaded)
+                {
+                    this.popupWindow.Close();
+                }
+            }
+            finally
+            {
+                this.IsPopupMode = false;
+                this.popupWindow = null;
             }
         }
     }

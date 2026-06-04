@@ -7,6 +7,7 @@
              xmlns:viewModels="clr-namespace:EventMapHpViewer.ViewModels"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:kanColleWrapper="clr-namespace:Grabacr07.KanColleWrapper;assembly=KanColleWrapper"
+             xmlns:metro2="http://schemes.grabacr.net/winfx/2015/personal/controls"
              Background="{DynamicResource ThemeBrushKey}"
              Foreground="{DynamicResource ActiveForegroundBrushKey}"
              mc:Ignorable="d" 
@@ -255,28 +256,6 @@
                                                Style="{DynamicResource DefaultTextStyleKey}"
                                                Text="無限"/>
 
-
-                                    <Grid x:Name="UnselectedIndicator"
-                                          Grid.Column="3"
-                                          Grid.Row="0"
-                                          Grid.RowSpan="2"
-                                          Grid.ColumnSpan="2"
-                                          Visibility="Visible">
-                                        <Grid.Style>
-                                            <Style TargetType="Grid">
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsRankSelected}" Value="True">
-                                                        <Setter Property="Visibility" Value="Collapsed" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Grid.Style>
-                                        <Border Background="{DynamicResource ThemeBrushKey}"
-                                                Margin="0" />
-                                        <TextBlock Text="難易度を選択してください"
-                                                   VerticalAlignment="Center"
-                                                   HorizontalAlignment="Center" />
-                                    </Grid>
                                 </Grid>
                             </Border>
                         </DataTemplate>
@@ -307,6 +286,39 @@
                                  Style="{DynamicResource EmphaticTextElementStyleKey}"/>
                         </TextBlock>
                     </StackPanel>
+                    <!-- 区切り線（ポップアップ内では非表示） -->
+					<Border Height=".99"
+									Background="{DynamicResource BorderBrushKey}"
+									Margin="0,6"
+									Visibility="Visible">
+						<Border.Style>
+							<Style TargetType="Border">
+								<Style.Triggers>
+									<DataTrigger Binding="{Binding IsPopupMode}" Value="True">
+										<Setter Property="Visibility" Value="Collapsed"/>
+									</DataTrigger>
+								</Style.Triggers>
+							</Style>
+						</Border.Style>
+					</Border>
+
+                    <!-- ポップアップボタン（ポップアップ内では非表示） -->
+					<metro2:CallMethodButton Content="別ウィンドウで表示"
+												 MethodName="OpenPopupWindow"
+												 HorizontalAlignment="Stretch"
+												 Margin="0,0,0,0"
+												 Padding="10"
+												Visibility="Visible">
+						<metro2:CallMethodButton.Style>
+							<Style TargetType="metro2:CallMethodButton">
+								<Style.Triggers>
+									<DataTrigger Binding="{Binding IsPopupMode}" Value="True">
+										<Setter Property="Visibility" Value="Collapsed"/>
+									</DataTrigger>
+								</Style.Triggers>
+							</Style>
+						</metro2:CallMethodButton.Style>
+					</metro2:CallMethodButton>
                 </StackPanel>
             </Border>
             
@@ -319,6 +331,6 @@
                 ※[設定]->[プラグイン]から「各マップのボスHP」と「艦隊の輸送資源量(TP)」の設定が可能です。<LineBreak/>
             </TextBlock>
         </Grid>
-        
+
     </ScrollViewer>
 </UserControl>
