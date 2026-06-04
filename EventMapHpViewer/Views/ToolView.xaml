@@ -285,42 +285,9 @@
                             <Run Text="{Binding TransportCapacity.A, Mode=OneWay}"
                                  Style="{DynamicResource EmphaticTextElementStyleKey}"/>
                         </TextBlock>
-                    </StackPanel>
-                    <!-- 区切り線（ポップアップ内では非表示） -->
-					<Border Height=".99"
-									Background="{DynamicResource BorderBrushKey}"
-									Margin="0,6"
-									Visibility="Visible">
-						<Border.Style>
-							<Style TargetType="Border">
-								<Style.Triggers>
-									<DataTrigger Binding="{Binding IsPopupMode}" Value="True">
-										<Setter Property="Visibility" Value="Collapsed"/>
-									</DataTrigger>
-								</Style.Triggers>
-							</Style>
-						</Border.Style>
-					</Border>
-
-                    <!-- ポップアップボタン（ポップアップ内では非表示） -->
-					<metro2:CallMethodButton Content="別ウィンドウで表示"
-												 MethodName="OpenPopupWindow"
-												 HorizontalAlignment="Stretch"
-												 Margin="0,0,0,0"
-												 Padding="10"
-												Visibility="Visible">
-						<metro2:CallMethodButton.Style>
-							<Style TargetType="metro2:CallMethodButton">
-								<Style.Triggers>
-									<DataTrigger Binding="{Binding IsPopupMode}" Value="True">
-										<Setter Property="Visibility" Value="Collapsed"/>
-									</DataTrigger>
-								</Style.Triggers>
-							</Style>
-						</metro2:CallMethodButton.Style>
-					</metro2:CallMethodButton>
-                </StackPanel>
-            </Border>
+					</StackPanel>
+				</StackPanel>
+			</Border>
             
             <TextBlock Grid.Row="3"
                        Style="{DynamicResource DefaultTextStyleKey}"
@@ -330,6 +297,24 @@
                 ※イベントマップのHPは、ボス旗艦のHPを削ると連動して減少します。<LineBreak/>
                 ※[設定]->[プラグイン]から「各マップのボスHP」と「艦隊の輸送資源量(TP)」の設定が可能です。<LineBreak/>
             </TextBlock>
+
+            <Border Grid.Row="4"
+                    Margin="5,0,5,5"
+                    HorizontalAlignment="Right">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsPopupMode}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <metro2:CallMethodButton Content="別ウィンドウで表示"
+                                         MethodName="OpenPopupWindow"
+                                         Padding="10" />
+            </Border>
         </Grid>
 
     </ScrollViewer>

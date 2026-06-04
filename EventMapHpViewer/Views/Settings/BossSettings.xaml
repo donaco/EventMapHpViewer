@@ -35,7 +35,7 @@
 
         <TextBlock Grid.Row="0"
                    Margin="0,0,0,10"
-                   Text="※ログイン後に設定が可能になります"
+                   Text="※現在、機能していません。"
                    Style="{DynamicResource DetailTextStyleKey}"/>
 
         <Grid Grid.Row="1"
@@ -54,7 +54,7 @@
             <RadioButton Grid.Row="0"
                          Grid.ColumnSpan="2"
                          GroupName="BossSettings"
-                         Content="リモートから情報を取得する"
+                         Content="リモート設定"
                          Margin="0,0,0,10"
                          IsChecked="{Binding UseLocalBossSettings, Converter={StaticResource ReverseBooelanConverter}}"/>
 
@@ -89,9 +89,6 @@
                 </Grid>
                 <TextBlock Style="{DynamicResource DefaultTextStyleKey}"
                            Margin="8,0,0,8">
-                    <Run Text="{}{mapId}: マップ ID"/><LineBreak/>
-                    <Run Text="{}{rank}: 難易度"/><LineBreak/>
-                    <Run Text="{}{gaugeNum}: ゲージ番号"/>
                 </TextBlock>
             </StackPanel>
             
