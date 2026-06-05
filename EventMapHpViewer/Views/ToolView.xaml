@@ -39,12 +39,32 @@
 
             <Border Grid.Row="0"
                     BorderThickness="0,0,0,1"
-                    BorderBrush="{DynamicResource ActiveBorderBrushKey}">
+                    BorderBrush="{DynamicResource ActiveBorderBrushKey}"
+                    >
                 <TextBlock Text="攻略中マップ"
                            Style="{DynamicResource HeaderTextStyleKey}"
-                           Margin="10,0,10,10"/>
+                           Margin="10,4,0,0"
+                           Height="30"
+                           Padding="0"/>
             </Border>
-
+            <Border Grid.Row="0"
+                    Margin="0,-12,0,0"
+                    HorizontalAlignment="Right">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsPopupMode}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <metro2:CallMethodButton Content="別ウィンドウで表示"
+                                         MethodName="OpenPopupWindow"
+                                         Width="120"
+                                         Height="30" />
+            </Border>
 
             <Border Grid.Row="1"
                     BorderThickness="0,0,0,1"
@@ -298,23 +318,7 @@
                 ※[設定]->[プラグイン]から「各マップのボスHP」と「艦隊の輸送資源量(TP)」の設定が可能です。<LineBreak/>
             </TextBlock>
 
-            <Border Grid.Row="4"
-                    Margin="5,0,5,5"
-                    HorizontalAlignment="Right">
-                <Border.Style>
-                    <Style TargetType="Border">
-                        <Setter Property="Visibility" Value="Visible"/>
-                        <Style.Triggers>
-                            <DataTrigger Binding="{Binding IsPopupMode}" Value="True">
-                                <Setter Property="Visibility" Value="Collapsed"/>
-                            </DataTrigger>
-                        </Style.Triggers>
-                    </Style>
-                </Border.Style>
-                <metro2:CallMethodButton Content="別ウィンドウで表示"
-                                         MethodName="OpenPopupWindow"
-                                         Padding="10" />
-            </Border>
+
         </Grid>
 
     </ScrollViewer>

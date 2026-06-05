@@ -9,7 +9,7 @@
 		xmlns:vm="clr-namespace:EventMapHpViewer.ViewModels"
 		mc:Ignorable="d"
 		d:DataContext="{d:DesignInstance vm:ToolViewModel}"
-		Title="攻略状況一覧"
+		Title="海域一覧"
 		Width="500"
 		Height="700"
 		FontSize="12"
@@ -42,7 +42,7 @@
 							  BandVisibility="Collapsed" />
 
                 <TextBlock Grid.Column="1"
-						   Text="攻略状況一覧"
+						   Text="海域一覧"
 						   Style="{DynamicResource CaptionTextStyleKey}"
 						   Margin="2,0,8,0" />
 
