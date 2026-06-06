@@ -39,15 +39,15 @@
 
             <Border Grid.Row="0"
                     BorderThickness="0,0,0,1"
-                    BorderBrush="{DynamicResource ActiveBorderBrushKey}"
-                    >
+                    BorderBrush="{DynamicResource ActiveBorderBrushKey}">
                 <TextBlock Text="攻略中マップ"
                            Style="{DynamicResource HeaderTextStyleKey}"
                            Margin="10,4,0,0"
                            Height="30"
                            Padding="0"/>
             </Border>
-            <Border Grid.Row="0"
+            <!-- 別ウィンドウ表示 -->
+                <Border Grid.Row="0"
                     Margin="0,-12,0,0"
                     HorizontalAlignment="Right">
                 <Border.Style>
@@ -283,8 +283,9 @@
                 </ItemsControl>
             </Grid>
 
+
+            <!-- 輸送力 表示 -->
             <Border Grid.Row="2"
-                    BorderThickness="0,0,0,1"
                     BorderBrush="{DynamicResource ActiveBorderBrushKey}">
                 <StackPanel Orientation="Horizontal"
                             Margin="5">
@@ -305,14 +306,13 @@
                             <Run Text="{Binding TransportCapacity.A, Mode=OneWay}"
                                  Style="{DynamicResource EmphaticTextElementStyleKey}"/>
                         </TextBlock>
-					</StackPanel>
-				</StackPanel>
-			</Border>
-            
+                    </StackPanel>
+                </StackPanel>
+            </Border>
             <TextBlock Grid.Row="3"
                        Style="{DynamicResource DefaultTextStyleKey}"
                        TextWrapping="WrapWithOverflow"
-                       Margin="5">
+                       Margin="5,10,0,0">
                 ※出撃(海域選択)画面を開いた際に更新されます。<LineBreak/>
                 ※イベントマップのHPは、ボス旗艦のHPを削ると連動して減少します。<LineBreak/>
                 ※[設定]->[プラグイン]から「各マップのボスHP」と「艦隊の輸送資源量(TP)」の設定が可能です。<LineBreak/>

@@ -58,18 +58,24 @@ namespace EventMapHpViewer.Models
         {
             if (this.IsCleared == 1) return RemainingCount.Zero;
 
+            // 輸送ゲージ：RequiredDefeatCount の有無に関わらず先に判定し、EventmapのNowMapHpを使用する
+            // （api_required_defeat_count が輸送量上限として設定されるケースがあるため）
+            if (this.GaugeType == GaugeType.Transport)
+            {
+                var nowHp = this.Eventmap?.NowMapHp ?? this.Current;
+                if (nowHp == null) return null;
+                if (nowHp <= 0) return RemainingCount.Zero;
+
+                var capacity = KanColleClient.Current.Homeport.Organization.TransportationCapacity();
+                if (capacity.A <= 0) return RemainingCount.MaxValue;  //ゲージ減らない
+                return new RemainingCount((int)Math.Ceiling((decimal)nowHp.Value / capacity.A));
+            }
+
             if (!this.Current.HasValue) return null;    //難易度切り替え直後
 
             if (this.RequiredDefeatCount > 0) return new RemainingCount(this.Current.Value);    //ゲージ有り通常海域
 
             if (this.Eventmap == null) return new RemainingCount(1);    //ゲージ無し通常海域
-
-            if (this.GaugeType == GaugeType.Transport)
-            {
-                var capacity = KanColleClient.Current.Homeport.Organization.TransportationCapacity();
-                if (capacity.A == 0) return RemainingCount.MaxValue;  //ゲージ減らない
-                return new RemainingCount((int)Math.Ceiling((decimal)this.Current / capacity.A));
-            }
 
             if (this.Eventmap.SelectedRank == 0) return null; //難易度未選択
 
@@ -138,9 +144,13 @@ namespace EventMapHpViewer.Models
         {
             if (this.GaugeType != GaugeType.Transport) return -1;
 
+            var nowHp = this.Eventmap?.NowMapHp ?? this.Current;
+            if (nowHp == null) return -1;
+            if (nowHp <= 0) return 0;
+
             var capacity = KanColleClient.Current.Homeport.Organization.TransportationCapacity();
-            if (capacity.S == 0) return int.MaxValue;  //ゲージ減らない
-            return (int)Math.Ceiling((decimal)this.Current / capacity.S);
+            if (capacity.S <= 0) return int.MaxValue;  //ゲージ減らない
+            return (int)Math.Ceiling((decimal)nowHp.Value / capacity.S);
         }
     }
 }
