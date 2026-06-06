@@ -8,12 +8,17 @@ using EventMapHpViewer.Models.Raw;
 using Grabacr07.KanColleWrapper;
 using Grabacr07.KanColleWrapper.Models;
 using EventMapHpViewer.Infrastructure.Mvvm;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace EventMapHpViewer.Models
 {
     public class MapInfoProxy : EventMapHpViewer.Infrastructure.Mvvm.Notifier, IDisposable
     {
         private readonly CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+        // 現在出撃中のマップID (エリアID * 10 + マップ番号)
+        private int _currentMapId = 0;
         #region Maps変更通知プロパティ
         private Maps _Maps;
 
@@ -71,6 +76,9 @@ namespace EventMapHpViewer.Models
                 .TryParse<map_start_next>()
                 .Subscribe(x =>
                 {
+                    // 出撃開始マップIDを記録
+                    this._currentMapId = x.Data.api_maparea_id * 10 + x.Data.api_mapinfo_no;
+
                     if (x.Data.api_eventmap == null) return;
                     var list = this.Maps.MapList ?? Array.Empty<MapData>();
                     var targetId = x.Data.api_maparea_id * 10 + x.Data.api_mapinfo_no;
@@ -87,6 +95,36 @@ namespace EventMapHpViewer.Models
                     if (targetMap.Eventmap.State == 1)
                         targetMap.Eventmap.State = 2;
                     this.RaisePropertyChanged(nameof(this.Maps));
+                })
+                .AddTo(this.compositeDisposable);
+
+            proxy.api_req_map_next
+                .TryParse<map_start_next>()
+                .Subscribe(x =>
+                {
+                    // 進行先マップIDを記録
+                    this._currentMapId = x.Data.api_maparea_id * 10 + x.Data.api_mapinfo_no;
+                })
+                .AddTo(this.compositeDisposable);
+
+            // battleresult: api_now_hp - api_sub_value で現在ゲージHPを即時反映
+            var battleresultPaths = new[]
+            {
+                "/kcsapi/api_req_sortie/battleresult",
+                "/kcsapi/api_req_combined_battle/battleresult",
+            };
+            proxy.ApiSessionSource
+                .Where(s => battleresultPaths.Any(p => s.Request.PathAndQuery == p))
+                .Subscribe(s =>
+                {
+                    try
+                    {
+                        this.ApplyBattleResult(s.Response.Body);
+                    }
+                    catch (Exception ex)
+                    {
+                        Debug.WriteLine($"MapInfoProxy - battleresult error: {ex.Message}");
+                    }
                 })
                 .AddTo(this.compositeDisposable);
         }
@@ -150,6 +188,38 @@ namespace EventMapHpViewer.Models
                 targetMap.Eventmap.NowMapHp = data.Data.api_maphp.api_now_maphp;
             }
             return list;
+        }
+
+        private void ApplyBattleResult(string responseBody)
+        {
+            if (string.IsNullOrEmpty(responseBody)) return;
+            if (this._currentMapId == 0) return;
+
+            var list = this.Maps.MapList;
+            if (list == null) return;
+
+            var targetMap = list.FirstOrDefault(m => m.Id == this._currentMapId);
+            if (targetMap?.Eventmap == null) return;
+
+            var root = JToken.Parse(responseBody);
+            var data = root["api_data"] ?? root;
+            var evResult = data?["api_eventmap_result"];
+            if (evResult == null) return;
+
+            var nowHp = evResult["api_now_hp"]?.Value<int?>();
+            var subValue = evResult["api_sub_value"]?.Value<int?>();
+            var maxHp = evResult["api_max_hp"]?.Value<int?>();
+
+            if (nowHp == null || subValue == null) return;
+
+            var calcHp = Math.Max(0, nowHp.Value - subValue.Value);
+            Debug.WriteLine($"MapInfoProxy - battleresult: mapId={this._currentMapId} nowHp={nowHp} sub={subValue} => {calcHp}");
+
+            targetMap.Eventmap.NowMapHp = calcHp;
+            if (maxHp.HasValue && maxHp.Value > 0)
+                targetMap.Eventmap.MaxMapHp = maxHp.Value;
+
+            this.RaisePropertyChanged(nameof(this.Maps));
         }
 
         public void Dispose()

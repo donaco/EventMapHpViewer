@@ -92,6 +92,7 @@
     <Compile Include="Models\MapArea.cs" />
     <Compile Include="Models\MapData.cs" />
     <Compile Include="Models\Rank.cs" />
+    <Compile Include="Models\Raw\battleresult.cs" />
     <Compile Include="Models\Settings\BossSettingsWrapper.cs" />
     <Compile Include="Models\Settings\MapHpSettings.cs" />
     <Compile Include="Models\MapInfo.cs" />
@@ -119,7 +120,8 @@
     <Compile Include="Views\Controls\BossSettingsUrlRule.cs" />
     <Compile Include="Views\Controls\Int32Rule.cs" />
     <Compile Include="Views\Controls\PromptComboBox.cs" />
-    <Compile Include="Views\Controls\PromptTextBox.cs" />    <Compile Include="Views\ToolViewWindow.xaml.cs">
+    <Compile Include="Views\Controls\PromptTextBox.cs" />
+    <Compile Include="Views\ToolViewWindow.xaml.cs">
       <DependentUpon>ToolViewWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\SettingsView.xaml.cs">
