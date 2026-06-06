@@ -8,7 +8,6 @@ using EventMapHpViewer.Models.Raw;
 using Grabacr07.KanColleWrapper;
 using Grabacr07.KanColleWrapper.Models;
 using EventMapHpViewer.Infrastructure.Mvvm;
-using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
 namespace EventMapHpViewer.Models
@@ -17,8 +16,11 @@ namespace EventMapHpViewer.Models
     {
         private readonly CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-        // 現在出撃中のマップID (エリアID * 10 + マップ番号)
-        private int _currentMapId = 0;
+        /// <summary>
+        /// battleresult 処理でゲージHPを更新した後に発生します。
+        /// ToolViewModel はこのイベントで UpdateRemainingCount を呼びます。
+        /// </summary>
+        public event Action BattleResultApplied;
         #region Maps変更通知プロパティ
         private Maps _Maps;
 
@@ -76,9 +78,6 @@ namespace EventMapHpViewer.Models
                 .TryParse<map_start_next>()
                 .Subscribe(x =>
                 {
-                    // 出撃開始マップIDを記録
-                    this._currentMapId = x.Data.api_maparea_id * 10 + x.Data.api_mapinfo_no;
-
                     if (x.Data.api_eventmap == null) return;
                     var list = this.Maps.MapList ?? Array.Empty<MapData>();
                     var targetId = x.Data.api_maparea_id * 10 + x.Data.api_mapinfo_no;
@@ -98,35 +97,8 @@ namespace EventMapHpViewer.Models
                 })
                 .AddTo(this.compositeDisposable);
 
-            proxy.api_req_map_next
-                .TryParse<map_start_next>()
-                .Subscribe(x =>
-                {
-                    // 進行先マップIDを記録
-                    this._currentMapId = x.Data.api_maparea_id * 10 + x.Data.api_mapinfo_no;
-                })
-                .AddTo(this.compositeDisposable);
-
-            // battleresult: api_now_hp - api_sub_value で現在ゲージHPを即時反映
-            var battleresultPaths = new[]
-            {
-                "/kcsapi/api_req_sortie/battleresult",
-                "/kcsapi/api_req_combined_battle/battleresult",
-            };
-            proxy.ApiSessionSource
-                .Where(s => battleresultPaths.Any(p => s.Request.PathAndQuery == p))
-                .Subscribe(s =>
-                {
-                    try
-                    {
-                        this.ApplyBattleResult(s.Response.Body);
-                    }
-                    catch (Exception ex)
-                    {
-                        Debug.WriteLine($"MapInfoProxy - battleresult error: {ex.Message}");
-                    }
-                })
-                .AddTo(this.compositeDisposable);
+            // battleresult: KanColleClient.BattleResultReceived イベント経由でHP更新
+            KanColleClient.Current.BattleResultReceived += this.OnBattleResultReceived;
         }
 
         private MapData[] CreateMapList(IEnumerable<member_mapinfo> maps)
@@ -190,18 +162,29 @@ namespace EventMapHpViewer.Models
             return list;
         }
 
-        private void ApplyBattleResult(string responseBody)
+        private void OnBattleResultReceived(int mapId, string normalized)
         {
-            if (string.IsNullOrEmpty(responseBody)) return;
-            if (this._currentMapId == 0) return;
+            try
+            {
+                this.ApplyBattleResult(mapId, normalized);
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"MapInfoProxy - battleresult error: {ex.Message}");
+            }
+        }
+
+        private void ApplyBattleResult(int mapId, string normalized)
+        {
+            if (string.IsNullOrEmpty(normalized)) return;
 
             var list = this.Maps.MapList;
             if (list == null) return;
 
-            var targetMap = list.FirstOrDefault(m => m.Id == this._currentMapId);
+            var targetMap = list.FirstOrDefault(m => m.Id == mapId);
             if (targetMap?.Eventmap == null) return;
 
-            var root = JToken.Parse(responseBody);
+            var root = JToken.Parse(normalized);
             var data = root["api_data"] ?? root;
             var evResult = data?["api_eventmap_result"];
             if (evResult == null) return;
@@ -213,17 +196,22 @@ namespace EventMapHpViewer.Models
             if (nowHp == null || subValue == null) return;
 
             var calcHp = Math.Max(0, nowHp.Value - subValue.Value);
-            Debug.WriteLine($"MapInfoProxy - battleresult: mapId={this._currentMapId} nowHp={nowHp} sub={subValue} => {calcHp}");
+            Debug.WriteLine($"MapInfoProxy - battleresult: mapId={mapId} nowHp={nowHp} sub={subValue} => {calcHp}");
 
             targetMap.Eventmap.NowMapHp = calcHp;
             if (maxHp.HasValue && maxHp.Value > 0)
                 targetMap.Eventmap.MaxMapHp = maxHp.Value;
 
-            this.RaisePropertyChanged(nameof(this.Maps));
+            Debug.WriteLine($"MapInfoProxy - battleresult applied: mapId={mapId} calcHp={calcHp}");
+
+            // MapViewModelのRemainingCount再計算をトリガー
+            // (Maps参照は変わらないのでRaisePropertyChangedではなく専用イベントで通知)
+            this.BattleResultApplied?.Invoke();
         }
 
         public void Dispose()
         {
+            KanColleClient.Current.BattleResultReceived -= this.OnBattleResultReceived;
             this.compositeDisposable.Dispose();
             GC.SuppressFinalize(this);
         }

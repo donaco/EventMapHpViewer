@@ -368,6 +368,10 @@ namespace EventMapHpViewer.ViewModels
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
+                // UI スレッドで最新値に更新（battleresult 後の NowMapHp を反映）
+                this.Current = this._source.Current?.ToString() ?? "???";
+                this.Max = this._source.Max?.ToString() ?? "???";
+
                 this.IsLoading = false;
                 this.IsSupported = remainingCount != null;
                 if (!this.IsSupported)

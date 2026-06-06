@@ -85,6 +85,12 @@ namespace EventMapHpViewer.ViewModels
             MapHpSettings.ShipTypeTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this.CompositeDisposable);
             MapHpSettings.SlotItemTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this.CompositeDisposable);
             MapHpSettings.ShipTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this.CompositeDisposable);
+
+            // battleresult でゲージHP更新後、既存 MapViewModel の残回数を再計算する
+            this.mapInfoProxy.BattleResultApplied += this.OnBattleResultApplied;
+            System.Reactive.Disposables.Disposable.Create(
+                () => this.mapInfoProxy.BattleResultApplied -= this.OnBattleResultApplied)
+                .AddTo(this.CompositeDisposable);
         }
 
         public void Initialize()
@@ -221,6 +227,13 @@ namespace EventMapHpViewer.ViewModels
             {
                 map.UpdateRemainingCount();
             }
+        }
+
+        private void OnBattleResultApplied()
+        {
+            // MapData.Eventmap.NowMapHp は既に更新済み。
+            // 既存の MapViewModel に再計算を依頼するだけ（MapViewModel を作り直さない）
+            this.UpdateRemainingCount();
         }
 
         public void OpenPopupWindow()
