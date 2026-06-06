@@ -77,14 +77,6 @@ namespace EventMapHpViewer.ViewModels
 
             MapHpSettings.UseLocalBossSettings.Subscribe(_ => this.UpdateRemainingCount()).AddTo(this.CompositeDisposable);
             MapHpSettings.BossSettings.Subscribe(_ => this.UpdateRemainingCount()).AddTo(this.CompositeDisposable);
-            // RemoteBossSettingsUrl は文字入力の度にリクエスト飛ぶようになるのは現実的ではないので、変更検知しない
-            //MapHpSettings.RemoteBossSettingsUrl.Subscribe(_ => this.UpdateRemainingCount()).AddTo(this);
-
-            MapHpSettings.UseAutoCalcTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this.CompositeDisposable);
-            MapHpSettings.TransportCapacityS.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this.CompositeDisposable);
-            MapHpSettings.ShipTypeTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this.CompositeDisposable);
-            MapHpSettings.SlotItemTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this.CompositeDisposable);
-            MapHpSettings.ShipTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this.CompositeDisposable);
 
             // battleresult でゲージHP更新後、既存 MapViewModel の残回数を再計算する
             this.mapInfoProxy.BattleResultApplied += this.OnBattleResultApplied;

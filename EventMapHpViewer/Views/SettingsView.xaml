@@ -3,7 +3,6 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:EventMapHpViewer.Views"
              xmlns:settings="clr-namespace:EventMapHpViewer.Views.Settings"
              xmlns:vm="clr-namespace:EventMapHpViewer.ViewModels.Settings"
              mc:Ignorable="d"
@@ -26,13 +25,6 @@
                            Style="{StaticResource TabHeaderTextStyleKey}"/>
             </TabItem.Header>
             <settings:BossSettings DataContext="{Binding BossSettings}"/>
-        </TabItem>
-        <TabItem>
-            <TabItem.Header>
-                <TextBlock Text="輸送資源量(TP)設定"
-                           Style="{StaticResource TabHeaderTextStyleKey}"/>
-            </TabItem.Header>
-            <settings:TpSettings DataContext="{Binding TpSettings}"/>
         </TabItem>
     </TabControl>
 </UserControl>

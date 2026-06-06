@@ -13,49 +13,20 @@ namespace EventMapHpViewer.Models
     {
         public static TransportCapacity TransportationCapacity(this Organization org)
         {
-            if (!MapHpSettings.UseAutoCalcTpSettings.Value)
-                return new TransportCapacity(MapHpSettings.TransportCapacityS.Value);
+            if (org == null) return new TransportCapacity(0m);
 
-            var settings = AutoCalcTpSettings.FromSettings;
-            var tp = org.TransportingShips()
-                .PossibleTransport()
-                .Sum(x => x.CalcTp(settings));
+            decimal tp;
+            if (org.Combined && org.CombinedFleet != null)
+            {
+                tp = org.CombinedFleet.State?.TransportPoint ?? 0m;
+            }
+            else
+            {
+                var firstFleet = org.Fleets?.Values?.OrderBy(x => x.Id).FirstOrDefault();
+                tp = firstFleet?.State?.TransportPoint ?? 0m;
+            }
+
             return new TransportCapacity(tp);
-        }
-
-        public static decimal CalcTp(this Ship ship, AutoCalcTpSettings settings)
-        {
-            var stypeTp = settings.ShipTypeTp
-                .FirstOrDefault(x => x.Id == ship.Info.ShipType.Id)?.Tp
-                ?? 0;
-
-            var shipTp = settings.ShipTp
-                .FirstOrDefault(x => x.Id == ship.Info.Id)?.Tp
-                ?? 0;
-
-            var slotTp = ship.Slots
-                .Concat(new[] { ship.ExSlot })
-                .Where(x => x.Equipped)
-                .Select(x => x.Item.Info.Id)
-                .Sum(x => settings.SlotItemTp.FirstOrDefault(y => y.Id == x)?.Tp ?? 0);
-
-            return stypeTp + shipTp + slotTp;
-        }
-
-        private static IEnumerable<Ship> TransportingShips(this Organization org)
-        {
-            var ships = org.Combined
-                ? org.CombinedFleet.Fleets.SelectMany(x => x.Ships)
-                : org.Fleets[1].Ships;
-            return ships.PossibleTransport();
-        }
-
-        private static IEnumerable<Ship> PossibleTransport(this IEnumerable<Ship> ships)
-        {
-            return ships
-                .Where(ship => !ship.Situation.HasFlag(ShipSituation.Evacuation))
-                .Where(ship => !ship.Situation.HasFlag(ShipSituation.Tow))
-                .Where(ship => !ship.Situation.HasFlag(ShipSituation.HeavilyDamaged));
         }
     }
 }
