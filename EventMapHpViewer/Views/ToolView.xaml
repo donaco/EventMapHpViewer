@@ -40,11 +40,38 @@
             <Border Grid.Row="0"
                     BorderThickness="0,0,0,1"
                     BorderBrush="{DynamicResource ActiveBorderBrushKey}">
-                <TextBlock Text="攻略中マップ"
+                <TextBlock Text="攻略中マップ　/"
                            Style="{DynamicResource HeaderTextStyleKey}"
                            Margin="10,4,0,0"
                            Height="30"
                            Padding="0"/>
+            </Border>
+            <!-- 輸送力 表示 -->
+            <Border Grid.Row="0"
+                   Margin="100,-8,0,0"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal"
+                    Margin="5,0">
+                    <TextBlock Text="艦隊の輸送力"
+                               Style="{DynamicResource EmphaticTextStyleKey}"
+                               FontSize="12"/>
+                    <StackPanel Margin="8,-2,0,0"
+                                Orientation="Horizontal">
+                        <TextBlock>
+                <Run Text="S:"
+                     Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                <Run Text="{Binding TransportCapacity.S, Mode=OneWay}"
+                     Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                        </TextBlock>
+                        <TextBlock Margin="8,0,0,0">
+                <Run Text="A:"
+                     Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                <Run Text="{Binding TransportCapacity.A, Mode=OneWay}"
+                     Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                        </TextBlock>
+                    </StackPanel>
+                </StackPanel>
             </Border>
             <!-- 別ウィンドウ表示 -->
                 <Border Grid.Row="0"
@@ -66,6 +93,7 @@
                                          Height="30" />
             </Border>
 
+          
             <Border Grid.Row="1"
                     BorderThickness="0,0,0,1"
                     BorderBrush="{DynamicResource ActiveBorderBrushKey}">
@@ -284,31 +312,7 @@
             </Grid>
 
 
-            <!-- 輸送力 表示 -->
-            <Border Grid.Row="2"
-                    BorderBrush="{DynamicResource ActiveBorderBrushKey}">
-                <StackPanel Orientation="Horizontal"
-                            Margin="5">
-                    <TextBlock Text="艦隊の輸送力"
-                               Style="{DynamicResource EmphaticTextStyleKey}"
-                               FontSize="12"/>
-                    <StackPanel Margin="8,0"
-                                Orientation="Horizontal">
-                        <TextBlock>
-                            <Run Text="S:"
-                                 Style="{DynamicResource DefaultTextElementStyleKey}"/>
-                            <Run Text="{Binding TransportCapacity.S, Mode=OneWay}"
-                                 Style="{DynamicResource EmphaticTextElementStyleKey}"/>
-                        </TextBlock>
-                        <TextBlock Margin="8,0">
-                            <Run Text="A:"
-                                 Style="{DynamicResource DefaultTextElementStyleKey}"/>
-                            <Run Text="{Binding TransportCapacity.A, Mode=OneWay}"
-                                 Style="{DynamicResource EmphaticTextElementStyleKey}"/>
-                        </TextBlock>
-                    </StackPanel>
-                </StackPanel>
-            </Border>
+
             <TextBlock Grid.Row="3"
                        Style="{DynamicResource DefaultTextStyleKey}"
                        TextWrapping="WrapWithOverflow"
