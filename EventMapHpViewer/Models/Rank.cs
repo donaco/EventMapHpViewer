@@ -8,6 +8,7 @@ namespace EventMapHpViewer.Models
 {
     public enum Rank
     {
+        Normal = 0,
         丁 = 1,
         丙 = 2,
         乙 = 3,

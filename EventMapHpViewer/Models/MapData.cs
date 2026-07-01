@@ -32,10 +32,11 @@ namespace EventMapHpViewer.Models
         {
             get
             {
+                // battleresult(api_landing_hp) で更新されたHPを最優先で表示
+                if (this.Eventmap?.MaxMapHp.HasValue == true) return this.Eventmap.MaxMapHp;
+
                 if (this.RequiredDefeatCount > 0) return this.RequiredDefeatCount;
-                return this.Eventmap != null
-                    ? this.Eventmap.MaxMapHp
-                    : 1;
+                return 1;
             }
         }
 
@@ -43,11 +44,13 @@ namespace EventMapHpViewer.Models
         {
             get
             {
+                // battleresult(api_landing_hp) で更新されたHPを最優先で表示
+                if (this.Eventmap?.NowMapHp.HasValue == true) return this.Eventmap.NowMapHp;
+
                 if (this.RequiredDefeatCount > 0)
-                    return Math.Max(0, this.RequiredDefeatCount - this.DefeatCount);  //ゲージ有り通常海域
-                return this.Eventmap != null
-                    ? this.Eventmap.NowMapHp   // イベント海域
-                    : 1;    // ゲージ無し通常海域
+                    return Math.Max(0, this.RequiredDefeatCount - this.DefeatCount);  // ゲージ有り通常海域
+
+                return 1;    // ゲージ無し通常海域
             }
         }
 

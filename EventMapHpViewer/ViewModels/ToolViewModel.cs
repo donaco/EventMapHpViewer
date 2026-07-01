@@ -98,7 +98,6 @@ namespace EventMapHpViewer.ViewModels
                 {
                     if (x.Data.api_event_id == 9)
                     {
-                        Debug.WriteLine("ToolViewModel: fixedTransportCapacity = true");
                         this.fixedTransportCapacity = true;
                     }
                 })
@@ -108,7 +107,6 @@ namespace EventMapHpViewer.ViewModels
                 {
                     if (fixedTransportCapacity)
                     {
-                        Debug.WriteLine("ToolViewModel: fixedTransportCapacity = false");
                         this.fixedTransportCapacity = false;
                     }
                     this.UpdateTransportCapacity();
@@ -205,14 +203,13 @@ namespace EventMapHpViewer.ViewModels
 
             if (KanColleClient.Current.Homeport?.Organization?.Fleets.Any() != true) return;
 
-            Debug.WriteLine(nameof(this.UpdateTransportCapacity));
             this.TransportCapacity = KanColleClient.Current.Homeport.Organization.TransportationCapacity();
             this.UpdateRemainingCount();
         }
 
-        private void UpdateRemainingCount()
+        private void UpdateRemainingCount(bool force = false)
         {
-            if (this.fixedTransportCapacity) return;    // 揚陸地点到達後は更新しない
+            if (this.fixedTransportCapacity && !force) return;    // 揚陸地点到達後は通常更新しない
 
             if (this.Maps == null) return;
             foreach (var map in this.Maps)
@@ -223,9 +220,8 @@ namespace EventMapHpViewer.ViewModels
 
         private void OnBattleResultApplied()
         {
-            // MapData.Eventmap.NowMapHp は既に更新済み。
-            // 既存の MapViewModel に再計算を依頼するだけ（MapViewModel を作り直さない）
-            this.UpdateRemainingCount();
+            // battleresult 反映時は強制更新（fixedTransportCapacity中でも更新）
+            this.UpdateRemainingCount(force: true);
         }
 
         public void OpenPopupWindow()

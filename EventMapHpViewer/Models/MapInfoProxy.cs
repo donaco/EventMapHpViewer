@@ -57,7 +57,6 @@ namespace EventMapHpViewer.Models
                 .TryParse<mapinfo>()
                 .Subscribe(m =>
                 {
-                    Debug.WriteLine("MapInfoProxy - member_mapinfo");
                     this.Maps.MapList = this.CreateMapList(m.Data.api_map_info);
                     this.RaisePropertyChanged(nameof(this.Maps));
                 })
@@ -67,7 +66,6 @@ namespace EventMapHpViewer.Models
                 .TryParse<map_select_eventmap_rank>()
                 .Subscribe(x =>
                 {
-                    Debug.WriteLine("MapInfoProxy - select_eventmap_rank");
                     this.Maps.MapList = this.UpdateRank(x);
                     this.RaisePropertyChanged(nameof(this.Maps));
                 })
@@ -88,7 +86,6 @@ namespace EventMapHpViewer.Models
                     && targetMap.Eventmap.MaxMapHp != 9999)
                         return;
 
-                    Debug.WriteLine("MapInfoProxy - map_start_next");
                     targetMap.Eventmap.NowMapHp = x.Data.api_eventmap.api_now_maphp;
                     targetMap.Eventmap.MaxMapHp = x.Data.api_eventmap.api_max_maphp;
                     if (targetMap.Eventmap.State == 1)
@@ -168,9 +165,8 @@ namespace EventMapHpViewer.Models
             {
                 this.ApplyBattleResult(mapId, normalized);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                Debug.WriteLine($"MapInfoProxy - battleresult error: {ex.Message}");
             }
         }
 
@@ -182,31 +178,44 @@ namespace EventMapHpViewer.Models
             if (list == null) return;
 
             var targetMap = list.FirstOrDefault(m => m.Id == mapId);
-            if (targetMap?.Eventmap == null) return;
+            if (targetMap == null) return;
 
             var root = JToken.Parse(normalized);
             var data = root["api_data"] ?? root;
-            var evResult = data?["api_eventmap_result"];
-            if (evResult == null) return;
+            if (data == null) return;
 
-            var nowHp = evResult["api_now_hp"]?.Value<int?>();
-            var subValue = evResult["api_sub_value"]?.Value<int?>();
-            var maxHp = evResult["api_max_hp"]?.Value<int?>();
+            var hpToken =
+                data["api_landing_hp"]
+                ?? data.SelectToken("api_landing_hp")
+                ?? data["api_eventmap_result"]
+                ?? data.SelectToken("api_eventmap_result");
 
-            if (nowHp == null || subValue == null) return;
+            if (hpToken == null) return;
 
-            var calcHp = Math.Max(0, nowHp.Value - subValue.Value);
-            Debug.WriteLine($"MapInfoProxy - battleresult: mapId={mapId} nowHp={nowHp} sub={subValue} => {calcHp}");
+            var nowHp = hpToken["api_now_hp"]?.Value<int?>();
+            var subValue = hpToken["api_sub_value"]?.Value<int?>() ?? 0;
+            var maxHp = hpToken["api_max_hp"]?.Value<int?>();
+
+            if (nowHp == null) return;
+
+            // 通常海域で Eventmap が無いケースを救済
+            if (targetMap.Eventmap == null)
+            {
+                targetMap.Eventmap = new Eventmap
+                {
+                    State = 2,
+                    SelectedRank = Rank.Normal, // 既定値（UI上の表示維持用）
+                };
+            }
+
+            var calcHp = Math.Max(0, nowHp.Value - subValue);
 
             targetMap.Eventmap.NowMapHp = calcHp;
             if (maxHp.HasValue && maxHp.Value > 0)
                 targetMap.Eventmap.MaxMapHp = maxHp.Value;
 
-            Debug.WriteLine($"MapInfoProxy - battleresult applied: mapId={mapId} calcHp={calcHp}");
-
-            // MapViewModelのRemainingCount再計算をトリガー
-            // (Maps参照は変わらないのでRaisePropertyChangedではなく専用イベントで通知)
             this.BattleResultApplied?.Invoke();
+            this.RaisePropertyChanged(nameof(this.Maps));
         }
 
         public void Dispose()
