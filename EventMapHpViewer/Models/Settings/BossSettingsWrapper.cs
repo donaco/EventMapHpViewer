@@ -26,6 +26,14 @@ namespace EventMapHpViewer.Models.Settings
 
         public BossSettingsWrapper(string json = "")
         {
+            // 設定未保存時は null が渡るため、Deserialize せずに空リストを使う
+            // （JsonConvert.DeserializeObject(null) は ArgumentNullException を投げる）
+            if (string.IsNullOrWhiteSpace(json))
+            {
+                this.List = new ObservableCollection<BossSetting>();
+                return;
+            }
+
             try
             {
                 var parsed = JsonConvert.DeserializeObject<BossSettingForParse[]>(json) ?? Array.Empty<BossSettingForParse>();
