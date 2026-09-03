@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="EventMapHpViewer.Views.ToolView"
+<UserControl x:Class="EventMapHpViewer.Views.ToolView"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:system="clr-namespace:System;assembly=mscorlib"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,7 +7,7 @@
              xmlns:viewModels="clr-namespace:EventMapHpViewer.ViewModels"
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:kanColleWrapper="clr-namespace:Grabacr07.KanColleWrapper;assembly=KanColleWrapper"
-             xmlns:metro="http://schemes.grabacr.net/winfx/2014/controls"
+             xmlns:metro2="http://schemes.grabacr.net/winfx/2015/personal/controls"
              Background="{DynamicResource ThemeBrushKey}"
              Foreground="{DynamicResource ActiveForegroundBrushKey}"
              mc:Ignorable="d" 
@@ -40,12 +40,60 @@
             <Border Grid.Row="0"
                     BorderThickness="0,0,0,1"
                     BorderBrush="{DynamicResource ActiveBorderBrushKey}">
-                <TextBlock Text="攻略中マップ"
+                <TextBlock Text="攻略中マップ　/"
                            Style="{DynamicResource HeaderTextStyleKey}"
-                           Margin="10,0,10,10"/>
+                           Margin="10,4,0,0"
+                           Height="30"
+                           Padding="0"/>
+            </Border>
+            <!-- 輸送力 表示 -->
+            <Border Grid.Row="0"
+                   Margin="100,-8,0,0"
+                   VerticalAlignment="Center"
+                   HorizontalAlignment="Left">
+                <StackPanel Orientation="Horizontal"
+                    Margin="5,0">
+                    <TextBlock Text="艦隊の輸送力"
+                               Style="{DynamicResource EmphaticTextStyleKey}"
+                               FontSize="12"/>
+                    <StackPanel Margin="8,-2,0,0"
+                                Orientation="Horizontal">
+                        <TextBlock>
+                <Run Text="S:"
+                     Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                <Run Text="{Binding TransportCapacity.S, Mode=OneWay}"
+                     Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                        </TextBlock>
+                        <TextBlock Margin="8,0,0,0">
+                <Run Text="A:"
+                     Style="{DynamicResource DefaultTextElementStyleKey}"/>
+                <Run Text="{Binding TransportCapacity.A, Mode=OneWay}"
+                     Style="{DynamicResource EmphaticTextElementStyleKey}"/>
+                        </TextBlock>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+            <!-- 別ウィンドウ表示 -->
+                <Border Grid.Row="0"
+                    Margin="0,-12,0,0"
+                    HorizontalAlignment="Right">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <Setter Property="Visibility" Value="Visible"/>
+                        <Style.Triggers>
+                            <DataTrigger Binding="{Binding IsPopupMode}" Value="True">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <metro2:CallMethodButton Content="別ウィンドウで表示"
+                                         MethodName="OpenPopupWindow"
+                                         Width="120"
+                                         Height="30" />
             </Border>
 
-
+          
             <Border Grid.Row="1"
                     BorderThickness="0,0,0,1"
                     BorderBrush="{DynamicResource ActiveBorderBrushKey}">
@@ -285,41 +333,19 @@
                 </ItemsControl>
             </Grid>
 
-            <Border Grid.Row="2"
-                    BorderThickness="0,0,0,1"
-                    BorderBrush="{DynamicResource ActiveBorderBrushKey}">
-                <StackPanel Orientation="Horizontal"
-                            Margin="5">
-                    <TextBlock Text="艦隊の輸送力"
-                               Style="{DynamicResource EmphaticTextStyleKey}"
-                               FontSize="12"/>
-                    <StackPanel Margin="8,0"
-                                Orientation="Horizontal">
-                        <TextBlock>
-                            <Run Text="S:"
-                                 Style="{DynamicResource DefaultTextElementStyleKey}"/>
-                            <Run Text="{Binding TransportCapacity.S, Mode=OneWay}"
-                                 Style="{DynamicResource EmphaticTextElementStyleKey}"/>
-                        </TextBlock>
-                        <TextBlock Margin="8,0">
-                            <Run Text="A:"
-                                 Style="{DynamicResource DefaultTextElementStyleKey}"/>
-                            <Run Text="{Binding TransportCapacity.A, Mode=OneWay}"
-                                 Style="{DynamicResource EmphaticTextElementStyleKey}"/>
-                        </TextBlock>
-                    </StackPanel>
-                </StackPanel>
-            </Border>
-            
+
+
             <TextBlock Grid.Row="3"
                        Style="{DynamicResource DefaultTextStyleKey}"
                        TextWrapping="WrapWithOverflow"
-                       Margin="5">
+                       Margin="5,10,0,0">
                 ※出撃(海域選択)画面を開いた際に更新されます。<LineBreak/>
                 ※イベントマップのHPは、ボス旗艦のHPを削ると連動して減少します。<LineBreak/>
-                ※[設定]->[プラグイン]から「各マップのボスHP」と「艦隊の輸送資源量(TP)」の設定が可能です。<LineBreak/>
+                ※[設定]->[プラグイン]から「各マップのボスHP」の設定が可能です(機能停止中)。<LineBreak/>
             </TextBlock>
+
+
         </Grid>
-        
+
     </ScrollViewer>
 </UserControl>

@@ -9,13 +9,46 @@ using System;
 using System.Reactive.Linq;
 using EventMapHpViewer.Models.Raw;
 using System.Diagnostics;
+using System.Windows;
 using EventMapHpViewer.Models.Settings;
+using EventMapHpViewer.Views;
 
 namespace EventMapHpViewer.ViewModels
 {
     public class ToolViewModel : ViewModel
     {
         private readonly MapInfoProxy mapInfoProxy;
+        private ToolViewWindow popupWindow;
+
+        #region IsTopMost変更通知プロパティ
+        private bool _IsTopMost = true;
+
+        public bool IsTopMost
+        {
+            get => this._IsTopMost;
+            set
+            {
+                if (this._IsTopMost == value) return;
+                this._IsTopMost = value;
+                this.RaisePropertyChanged();
+            }
+        }
+        #endregion
+
+        #region IsPopupMode変更通知プロパティ
+        private bool _IsPopupMode;
+
+        public bool IsPopupMode
+        {
+            get => this._IsPopupMode;
+            set
+            {
+                if (this._IsPopupMode == value) return;
+                this._IsPopupMode = value;
+                this.RaisePropertyChanged();
+            }
+        }
+        #endregion
 
         public ToolViewModel(MapInfoProxy proxy)
         {
@@ -37,22 +70,20 @@ namespace EventMapHpViewer.ViewModels
                         .ToArray();
                     this.IsNoMap = !this.Maps.Any();
                 }, false)
-                .AddTo(this);
+                .AddTo(this.CompositeDisposable);
 
             KanColleClient.Current
                 .Subscribe(nameof(KanColleClient.IsStarted), Initialize, false)
-                .AddTo(this);
+                .AddTo(this.CompositeDisposable);
 
-            MapHpSettings.UseLocalBossSettings.Subscribe(_ => this.UpdateRemainingCount()).AddTo(this);
-            MapHpSettings.BossSettings.Subscribe(_ => this.UpdateRemainingCount()).AddTo(this);
-            // RemoteBossSettingsUrl は文字入力の度にリクエスト飛ぶようになるのは現実的ではないので、変更検知しない
-            //MapHpSettings.RemoteBossSettingsUrl.Subscribe(_ => this.UpdateRemainingCount()).AddTo(this);
+            MapHpSettings.UseLocalBossSettings.Subscribe(_ => this.UpdateRemainingCount()).AddTo(this.CompositeDisposable);
+            MapHpSettings.BossSettings.Subscribe(_ => this.UpdateRemainingCount()).AddTo(this.CompositeDisposable);
 
-            MapHpSettings.UseAutoCalcTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);
-            MapHpSettings.TransportCapacityS.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);
-            MapHpSettings.ShipTypeTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);
-            MapHpSettings.SlotItemTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);
-            MapHpSettings.ShipTpSettings.Subscribe(_ => this.UpdateTransportCapacity()).AddTo(this);
+            // battleresult でゲージHP更新後、既存 MapViewModel の残回数を再計算する
+            this.mapInfoProxy.BattleResultApplied += this.OnBattleResultApplied;
+            System.Reactive.Disposables.Disposable.Create(
+                () => this.mapInfoProxy.BattleResultApplied -= this.OnBattleResultApplied)
+                .AddTo(this.CompositeDisposable);
         }
 
         public void Initialize()
@@ -61,7 +92,7 @@ namespace EventMapHpViewer.ViewModels
                 .Subscribe(nameof(Organization.Fleets), this.UpdateFleets, false)
                 .Subscribe(nameof(Organization.Combined), this.UpdateTransportCapacity, false)
                 .Subscribe(nameof(Organization.Ships), () => this.handledShips.Clear(), false)
-                .AddTo(this);
+                .AddTo(this.CompositeDisposable);
             KanColleClient.Current.Proxy.api_req_map_next
                 .TryParse<map_start_next>()
                 .Subscribe(x =>
@@ -71,7 +102,7 @@ namespace EventMapHpViewer.ViewModels
                         this.fixedTransportCapacity = true;
                     }
                 })
-                .AddTo(this);
+                .AddTo(this.CompositeDisposable);
             KanColleClient.Current.Proxy.api_port
                 .Subscribe(_ =>
                 {
@@ -81,7 +112,7 @@ namespace EventMapHpViewer.ViewModels
                     }
                     this.UpdateTransportCapacity();
                 })
-                .AddTo(this);
+                .AddTo(this.CompositeDisposable);
         }
 
         #region Maps変更通知プロパティ
@@ -177,14 +208,68 @@ namespace EventMapHpViewer.ViewModels
             this.UpdateRemainingCount();
         }
 
-        private void UpdateRemainingCount()
+        private void UpdateRemainingCount(bool force = false)
         {
-            if (this.fixedTransportCapacity) return;    // 揚陸地点到達後は更新しない
+            if (this.fixedTransportCapacity && !force) return;    // 揚陸地点到達後は通常更新しない
 
             if (this.Maps == null) return;
             foreach (var map in this.Maps)
             {
                 map.UpdateRemainingCount();
+            }
+        }
+
+        private void OnBattleResultApplied()
+        {
+            // battleresult 反映時は強制更新（fixedTransportCapacity中でも更新）
+            this.UpdateRemainingCount(force: true);
+        }
+
+        public void OpenPopupWindow()
+        {
+            try
+            {
+                if (this.popupWindow != null && this.popupWindow.IsLoaded)
+                {
+                    this.popupWindow.Activate();
+                    return;
+                }
+
+                this.IsPopupMode = true;
+                this.RaisePropertyChanged(nameof(this.IsPopupMode));
+                this.popupWindow = new ToolViewWindow
+                {
+                    DataContext = this,
+                };
+                this.popupWindow.Closed += (s, e) =>
+                {
+                    this.IsPopupMode = false;
+                    this.RaisePropertyChanged(nameof(this.IsPopupMode));
+                    this.popupWindow = null;
+                };
+                this.popupWindow.Show();
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"[ToolViewWindow] ポップアップ表示に失敗: {ex}");
+                this.IsPopupMode = false;
+                this.popupWindow = null;
+            }
+        }
+
+        public void ClosePopupWindow()
+        {
+            try
+            {
+                if (this.popupWindow != null && this.popupWindow.IsLoaded)
+                {
+                    this.popupWindow.Close();
+                }
+            }
+            finally
+            {
+                this.IsPopupMode = false;
+                this.popupWindow = null;
             }
         }
     }

@@ -138,6 +138,8 @@ namespace EventMapHpViewer.Models.Settings
         /// <returns></returns>
         private static HttpClientHandler GetProxyConfiguredHandler()
         {
+            // KanColleViewer 内製 KanColleProxy では UpstreamProxySettings を公開しないため、
+            // ここではシステム既定プロキシ設定に委譲する。
             return new HttpClientHandler();
         }
 

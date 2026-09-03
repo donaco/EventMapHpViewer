@@ -339,7 +339,7 @@ namespace EventMapHpViewer.ViewModels
             this.IsCleared = info.IsCleared == 1;
             this.IsRankSelected = info.Eventmap == null
                 || info.Eventmap.SelectedRank != 0
-                || info.Eventmap.NowMapHp != 9999;
+                || info.Eventmap.State != 1;
             this.GaugeType = info.GaugeType;
 
             this.GaugeColor = green;
@@ -368,6 +368,10 @@ namespace EventMapHpViewer.ViewModels
         {
             Application.Current.Dispatcher.Invoke(() =>
             {
+                // UI スレッドで最新値に更新（battleresult 後の NowMapHp を反映）
+                this.Current = this._source.Current?.ToString() ?? "???";
+                this.Max = this._source.Max?.ToString() ?? "???";
+
                 this.IsLoading = false;
                 this.IsSupported = remainingCount != null;
                 if (!this.IsSupported)
