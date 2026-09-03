@@ -85,7 +85,6 @@ namespace EventMapHpViewer.Models.Settings
             }
             try
             {
-                Debug.WriteLine($"MapHP - GET: {url}");
                 var response = await client.GetAsync(url);
                 if (!response.IsSuccessStatusCode)
                 {

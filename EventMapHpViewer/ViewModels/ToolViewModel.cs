@@ -68,7 +68,6 @@ namespace EventMapHpViewer.ViewModels
                 {
                     if (x.Data.api_event_id == 9)
                     {
-                        Debug.WriteLine("ToolViewModel: fixedTransportCapacity = true");
                         this.fixedTransportCapacity = true;
                     }
                 })
@@ -78,7 +77,6 @@ namespace EventMapHpViewer.ViewModels
                 {
                     if (fixedTransportCapacity)
                     {
-                        Debug.WriteLine("ToolViewModel: fixedTransportCapacity = false");
                         this.fixedTransportCapacity = false;
                     }
                     this.UpdateTransportCapacity();
@@ -175,7 +173,6 @@ namespace EventMapHpViewer.ViewModels
 
             if (KanColleClient.Current.Homeport?.Organization?.Fleets.Any() != true) return;
 
-            Debug.WriteLine(nameof(this.UpdateTransportCapacity));
             this.TransportCapacity = KanColleClient.Current.Homeport.Organization.TransportationCapacity();
             this.UpdateRemainingCount();
         }

@@ -13,7 +13,7 @@ namespace MetroTrilithon.Mvvm
 
         ICollection<IDisposable> IDisposableHolder.CompositeDisposable => this._compositeDisposable;
 
-        protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = "")
+        protected override void RaisePropertyChanged([CallerMemberName] string propertyName = "")
         {
             base.RaisePropertyChanged(propertyName);
         }

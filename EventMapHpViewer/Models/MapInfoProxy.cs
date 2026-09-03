@@ -53,7 +53,6 @@ namespace EventMapHpViewer.Models
                 .TryParse<mapinfo>()
                 .Subscribe(m =>
                 {
-                    Debug.WriteLine("MapInfoProxy - member_mapinfo");
                     this.Maps.MapList = this.CreateMapList(m.Data.api_map_info);
                     this.RaisePropertyChanged(nameof(this.Maps));
                 })
@@ -64,7 +63,6 @@ namespace EventMapHpViewer.Models
                 .TryParse<map_select_eventmap_rank>()
                 .Subscribe(x =>
                 {
-                    Debug.WriteLine("MapInfoProxy - select_eventmap_rank");
                     this.Maps.MapList = this.UpdateRank(x);
                     this.RaisePropertyChanged(nameof(this.Maps));
                 })
@@ -85,7 +83,6 @@ namespace EventMapHpViewer.Models
                     && targetMap.Eventmap.MaxMapHp != 9999)
                         return;
 
-                    Debug.WriteLine("MapInfoProxy - map_start_next");
                     targetMap.Eventmap.NowMapHp = x.Data.api_eventmap.api_now_maphp;
                     targetMap.Eventmap.MaxMapHp = x.Data.api_eventmap.api_max_maphp;
                     this.RaisePropertyChanged(nameof(this.Maps));
