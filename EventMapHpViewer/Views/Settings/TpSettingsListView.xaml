@@ -119,9 +119,9 @@
                                 Width="{Binding TpColumnWidth, ElementName=root}">
                     <GridViewColumn.CellTemplate>
                         <DataTemplate DataType="{x:Type m:TpSetting}">
-                            <metro:PromptTextBox Margin="-6,0">
-                                <metro:PromptTextBox.Style>
-                                    <Style TargetType="{x:Type metro:PromptTextBox}">
+                            <TextBox Margin="-6,0">
+                                <TextBox.Style>
+                                    <Style TargetType="{x:Type TextBox}">
                                         <Style.Triggers>
                                             <DataTrigger Binding="{Binding Tp}"
                                                          Value="0">
@@ -130,16 +130,16 @@
                                             </DataTrigger>
                                         </Style.Triggers>
                                     </Style>
-                                </metro:PromptTextBox.Style>
-                                <metro:PromptTextBox.Text>
+                                </TextBox.Style>
+                                <TextBox.Text>
                                     <Binding Path="Tp"
                                              UpdateSourceTrigger="PropertyChanged">
                                         <Binding.ValidationRules>
                                             <controls:DecimalRule/>
                                         </Binding.ValidationRules>
                                     </Binding>
-                                </metro:PromptTextBox.Text>
-                            </metro:PromptTextBox>
+                                </TextBox.Text>
+                            </TextBox>
                         </DataTemplate>
                     </GridViewColumn.CellTemplate>
                 </GridViewColumn>

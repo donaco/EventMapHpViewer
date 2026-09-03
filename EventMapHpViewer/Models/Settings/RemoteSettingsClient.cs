@@ -1,6 +1,5 @@
-﻿using Codeplex.Data;
-using Grabacr07.KanColleWrapper;
-using Nekoxy;
+﻿using Grabacr07.KanColleWrapper;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -96,7 +95,7 @@ namespace EventMapHpViewer.Models.Settings
                 }
 
                 var json = await response.Content.ReadAsStringAsync();
-                T parsed = DynamicJson.Parse(json);
+                var parsed = JsonConvert.DeserializeObject<T>(json);
                 this.lastModified.TryUpdate(url, DateTimeOffset.Now, lm);
                 this.caches.AddOrUpdate(url, parsed, (_, __) => parsed);
                 return parsed;
@@ -139,31 +138,33 @@ namespace EventMapHpViewer.Models.Settings
         /// <returns></returns>
         private static HttpClientHandler GetProxyConfiguredHandler()
         {
-            switch (HttpProxy.UpstreamProxyConfig.Type)
+            var settings = KanColleClient.Current.Proxy.UpstreamProxySettings;
+
+            switch (settings.Type)
             {
-                case ProxyConfigType.DirectAccess:
+                case ProxyType.DirectAccess:
                     return new HttpClientHandler
                     {
-                        UseProxy = false
+                        UseProxy = false,
                     };
-                case ProxyConfigType.SpecificProxy:
-                    var settings = KanColleClient.Current.Proxy.UpstreamProxySettings;
+
+                case ProxyType.SpecificProxy:
                     var host = settings.IsUseHttpProxyForAllProtocols ? settings.HttpHost : settings.HttpsHost;
                     var port = settings.IsUseHttpProxyForAllProtocols ? settings.HttpPort : settings.HttpsPort;
                     if (string.IsNullOrWhiteSpace(host))
                     {
                         return new HttpClientHandler { UseProxy = false };
                     }
-                    else
+
+                    return new HttpClientHandler
                     {
-                        return new HttpClientHandler
-                        {
-                            UseProxy = true,
-                            Proxy = new WebProxy($"{host}:{port}"),
-                        };
-                    }
-                case ProxyConfigType.SystemProxy:
+                        UseProxy = true,
+                        Proxy = new WebProxy($"{host}:{port}"),
+                    };
+
+                case ProxyType.SystemProxy:
                     return new HttpClientHandler();
+
                 default:
                     return new HttpClientHandler();
             }

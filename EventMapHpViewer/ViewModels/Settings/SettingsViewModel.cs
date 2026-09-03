@@ -1,11 +1,11 @@
 ﻿using Grabacr07.KanColleWrapper;
-using Livet;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using MetroTrilithon.Mvvm;
 using StatefulModel;
 using EventMapHpViewer.Models.Settings;
@@ -26,7 +26,7 @@ namespace EventMapHpViewer.ViewModels.Settings
             };
 
             KanColleClient.Current.Subscribe(nameof(KanColleClient.Current.IsStarted), () =>
-            DispatcherHelper.UIDispatcher.Invoke(this.Initialize)
+            Application.Current?.Dispatcher?.Invoke(this.Initialize)
             , false)
             .AddTo(this);
         }

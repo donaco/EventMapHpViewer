@@ -6,6 +6,7 @@
              xmlns:v="clr-namespace:EventMapHpViewer.Views.Settings"
              xmlns:m="clr-namespace:EventMapHpViewer.Models.Settings"
              xmlns:vm="clr-namespace:EventMapHpViewer.ViewModels.Settings"
+             xmlns:controls="clr-namespace:EventMapHpViewer.Views.Controls"
              xmlns:metro="http://schemes.grabacr.net/winfx/2014/controls"
              xmlns:metro2="http://schemes.grabacr.net/winfx/2015/personal/controls"
              mc:Ignorable="d" 
@@ -62,16 +63,16 @@
                                 Margin="4,0">
                         <TextBlock Text="S:"
                                    Style="{DynamicResource DefaultTextStyleKey}"/>
-                        <metro:PromptTextBox>
-                            <metro:PromptTextBox.Text>
+                        <TextBox>
+                            <TextBox.Text>
                                 <Binding Path="TransportCapacityS"
                                          UpdateSourceTrigger="PropertyChanged">
                                     <Binding.ValidationRules>
-                                        <metro:Int32Rule Min="0"/>
+                                        <controls:Int32Rule Min="0"/>
                                     </Binding.ValidationRules>
                                 </Binding>
-                            </metro:PromptTextBox.Text>
-                        </metro:PromptTextBox>
+                            </TextBox.Text>
+                        </TextBox>
                     </StackPanel>
                     <TextBlock Margin="4,0">
                         <Run Text="A:"

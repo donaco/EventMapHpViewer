@@ -70,9 +70,9 @@
                     </Grid.ColumnDefinitions>
                     <TextBlock Grid.Column="0"
                                Text="URL: "/>
-                    <metro:PromptTextBox Grid.Column="1"
-                                         Margin="0,0,8,0"
-                                         VerticalAlignment="Center">
+                    <TextBox Grid.Column="1"
+                             Margin="0,0,8,0"
+                             VerticalAlignment="Center">
                         <Binding Path="RemoteBossSettingsUrl"
                                  Mode="TwoWay"
                                  UpdateSourceTrigger="PropertyChanged">
@@ -80,7 +80,7 @@
                                 <controls:BossSettingsUrlRule/>
                             </Binding.ValidationRules>
                         </Binding>
-                    </metro:PromptTextBox>
+                    </TextBox>
                     <metro2:CallMethodButton Grid.Column="2"
                                              MethodTarget="{Binding}"
                                              MethodName="RestoreDefaultRemoteBossSettingsUrl"
@@ -163,60 +163,56 @@
                 <TextBlock Grid.Column="0"
                            Grid.Row="0"
                            Text="マップ: "/>
-                <metro:PromptComboBox Grid.Column="1"
-                                      Grid.Row="0"
-                                      ItemsSource="{Binding MapItemsSource}"
-                                      DisplayMemberPath="Value"
-                                      SelectedValuePath="Key"
-                                      SelectedValue="{Binding MapId}"
-                                      Prompt=""
-                                      Margin="0,4"/>
+                <ComboBox Grid.Column="1"
+                          Grid.Row="0"
+                          ItemsSource="{Binding MapItemsSource}"
+                          DisplayMemberPath="Value"
+                          SelectedValuePath="Key"
+                          SelectedValue="{Binding MapId}"
+                          Margin="0,4"/>
 
                 <TextBlock Grid.Column="0"
                            Grid.Row="1"
                            Text="難易度: "/>
-                <metro:PromptComboBox Grid.Column="1"
-                                      Grid.Row="1"
-                                      ItemsSource="{Binding RankItemsSource}"
-                                      DisplayMemberPath="Value"
-                                      SelectedValuePath="Key"
-                                      SelectedValue="{Binding Rank}"
-                                      Prompt=""
-                                      Margin="0,4"/>
+                <ComboBox Grid.Column="1"
+                          Grid.Row="1"
+                          ItemsSource="{Binding RankItemsSource}"
+                          DisplayMemberPath="Value"
+                          SelectedValuePath="Key"
+                          SelectedValue="{Binding Rank}"
+                          Margin="0,4"/>
 
                 <TextBlock Grid.Column="0"
                            Grid.Row="2"
                            Text="ゲージ番号: "/>
-                <metro:PromptTextBox Grid.Column="1"
-                                     Grid.Row="2"
-                                     Margin="0,4"
-                                     Prompt="">
+                <TextBox Grid.Column="1"
+                         Grid.Row="2"
+                         Margin="0,4">
                     <Binding Path="GaugeNum"
                              UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>
-                            <metro:Int32Rule Min="1"
-                                             Max="9"
-                                             AllowsEmpty="True"/>
+                            <controls:Int32Rule Min="1"
+                                                Max="9"
+                                                AllowsEmpty="True"/>
                         </Binding.ValidationRules>
                     </Binding>
-                </metro:PromptTextBox>
+                </TextBox>
 
                 <TextBlock Grid.Column="0"
                            Grid.Row="3"
                            Text="ボスHP: "/>
-                <metro:PromptTextBox Grid.Column="1"
-                                     Grid.Row="3"
-                                     Margin="0,4"
-                                     Prompt="">
+                <TextBox Grid.Column="1"
+                         Grid.Row="3"
+                         Margin="0,4">
                     <Binding Path="BossHP"
                              UpdateSourceTrigger="PropertyChanged">
                         <Binding.ValidationRules>
-                            <metro:Int32Rule Min="1"
-                                             Max="9999"
-                                             AllowsEmpty="False"/>
+                            <controls:Int32Rule Min="1"
+                                                Max="9999"
+                                                AllowsEmpty="False"/>
                         </Binding.ValidationRules>
                     </Binding>
-                </metro:PromptTextBox>
+                </TextBox>
 
                 <TextBlock Grid.Column="0"
                            Grid.Row="4"

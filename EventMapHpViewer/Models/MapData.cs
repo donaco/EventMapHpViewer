@@ -4,10 +4,8 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Codeplex.Data;
 using EventMapHpViewer.Models.Settings;
 using Grabacr07.KanColleWrapper;
-using Nekoxy;
 
 namespace EventMapHpViewer.Models
 {

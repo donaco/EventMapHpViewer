@@ -1,6 +1,5 @@
 ﻿using EventMapHpViewer.Models.Settings;
 using Grabacr07.KanColleWrapper;
-using Livet;
 using StatefulModel;
 using System;
 using System.Collections.Generic;

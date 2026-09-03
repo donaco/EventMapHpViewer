@@ -1,5 +1,5 @@
-﻿using Codeplex.Data;
-using MetroTrilithon.Serialization;
+﻿using MetroTrilithon.Serialization;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -25,18 +25,15 @@ namespace EventMapHpViewer.Models.Settings
 
         public static SerializableProperty<string> ShipTypeTpSettings { get; }
             = new SerializableProperty<string>(GetKey(), roamingProvider,
-                DynamicJson.Serialize(AutoCalcTpSettings.Default.ShipTypeTp.ToArray()
-                    )) { AutoSave = true };
+                JsonConvert.SerializeObject(AutoCalcTpSettings.Default.ShipTypeTp.ToArray())) { AutoSave = true };
 
         public static SerializableProperty<string> SlotItemTpSettings { get; }
             = new SerializableProperty<string>(GetKey(), roamingProvider,
-                DynamicJson.Serialize(AutoCalcTpSettings.Default.SlotItemTp.ToArray()
-                    )) { AutoSave = true };
+                JsonConvert.SerializeObject(AutoCalcTpSettings.Default.SlotItemTp.ToArray())) { AutoSave = true };
 
         public static SerializableProperty<string> ShipTpSettings { get; }
             = new SerializableProperty<string>(GetKey(), roamingProvider,
-                DynamicJson.Serialize(AutoCalcTpSettings.Default.ShipTp.ToArray()
-                    )) { AutoSave = true };
+                JsonConvert.SerializeObject(AutoCalcTpSettings.Default.ShipTp.ToArray())) { AutoSave = true };
 
         public static SerializableProperty<bool> UseAutoCalcTpSettings { get; }
             = new SerializableProperty<bool>(GetKey(), roamingProvider,

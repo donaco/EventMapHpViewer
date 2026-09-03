@@ -5,8 +5,8 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
-using Codeplex.Data;
 using Grabacr07.KanColleWrapper;
+using Newtonsoft.Json;
 using Grabacr07.KanColleWrapper.Models;
 using Grabacr07.KanColleWrapper.Models.Raw;
 using StatefulModel;
@@ -14,7 +14,7 @@ using MetroTrilithon.Mvvm;
 
 namespace EventMapHpViewer.Models.Settings
 {
-    class AutoCalcTpSettings : Livet.NotificationObject
+    class AutoCalcTpSettings : MetroTrilithon.Mvvm.Notifier
     {
         #region ShipTypeTp
 
@@ -76,13 +76,25 @@ namespace EventMapHpViewer.Models.Settings
 
         private AutoCalcTpSettings(string stypeTp, string slotitemTp, string shipTp)
         {
-            try { this.ShipTypeTp = DynamicJson.Parse(stypeTp); }
+            try
+            {
+                var parsed = JsonConvert.DeserializeObject<TpSetting[]>(stypeTp);
+                this.ShipTypeTp = new ObservableSynchronizedCollection<TpSetting>(new ObservableCollection<TpSetting>(parsed ?? Array.Empty<TpSetting>()));
+            }
             catch { this.ShipTypeTp = Default.ShipTypeTp; }
 
-            try { this.SlotItemTp = DynamicJson.Parse(slotitemTp); }
+            try
+            {
+                var parsed = JsonConvert.DeserializeObject<TpSetting[]>(slotitemTp);
+                this.SlotItemTp = new ObservableSynchronizedCollection<TpSetting>(new ObservableCollection<TpSetting>(parsed ?? Array.Empty<TpSetting>()));
+            }
             catch { this.SlotItemTp = Default.SlotItemTp; }
 
-            try { this.ShipTp = DynamicJson.Parse(shipTp); }
+            try
+            {
+                var parsed = JsonConvert.DeserializeObject<TpSetting[]>(shipTp);
+                this.ShipTp = new ObservableSynchronizedCollection<TpSetting>(new ObservableCollection<TpSetting>(parsed ?? Array.Empty<TpSetting>()));
+            }
             catch { this.ShipTp = Default.ShipTp; }
         }
 
@@ -177,11 +189,11 @@ namespace EventMapHpViewer.Models.Settings
         public static void Save(this AutoCalcTpSettings settings)
         {
             if (settings.ShipTypeTp.Any())
-                MapHpSettings.ShipTypeTpSettings.Value = DynamicJson.Serialize(settings.ShipTypeTp);
+                MapHpSettings.ShipTypeTpSettings.Value = JsonConvert.SerializeObject(settings.ShipTypeTp);
             if (settings.SlotItemTp.Any())
-                MapHpSettings.SlotItemTpSettings.Value = DynamicJson.Serialize(settings.SlotItemTp);
+                MapHpSettings.SlotItemTpSettings.Value = JsonConvert.SerializeObject(settings.SlotItemTp);
             if (settings.ShipTp.Any())
-                MapHpSettings.ShipTpSettings.Value = DynamicJson.Serialize(settings.ShipTp);
+                MapHpSettings.ShipTpSettings.Value = JsonConvert.SerializeObject(settings.ShipTp);
         }
 
         public static void ResetAndSave(this AutoCalcTpSettings settings)

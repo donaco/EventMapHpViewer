@@ -1,7 +1,5 @@
 ﻿using System.Linq;
 using EventMapHpViewer.Models;
-using Livet;
-using Livet.EventListeners;
 using Grabacr07.KanColleWrapper;
 using MetroTrilithon.Mvvm;
 using System.Collections.Generic;
@@ -63,8 +61,7 @@ namespace EventMapHpViewer.ViewModels
                 .Subscribe(nameof(Organization.Combined), this.UpdateTransportCapacity, false)
                 .Subscribe(nameof(Organization.Ships), () => this.handledShips.Clear(), false)
                 .AddTo(this);
-            KanColleClient.Current.Proxy.ApiSessionSource
-                .Where(s => s.Request.PathAndQuery == "/kcsapi/api_req_map/next")
+            KanColleClient.Current.Proxy.api_req_map_next
                 .TryParse<map_start_next>()
                 .Subscribe(x =>
                 {
