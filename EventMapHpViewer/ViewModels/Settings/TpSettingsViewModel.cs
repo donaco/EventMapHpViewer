@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using MetroTrilithon.Lifetime;
 using MetroTrilithon.Mvvm;
 using System.Threading;
 using Grabacr07.KanColleWrapper;

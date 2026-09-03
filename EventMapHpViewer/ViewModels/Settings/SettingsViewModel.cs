@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
+using MetroTrilithon.Lifetime;
 using MetroTrilithon.Mvvm;
 using StatefulModel;
 using EventMapHpViewer.Models.Settings;
@@ -33,6 +34,8 @@ namespace EventMapHpViewer.ViewModels.Settings
 
         private void Initialize()
         {
+            if (Models.Maps.MapInfos == null) return;
+
             this.BossSettings.MapItemsSource
                 = Models.Maps.MapInfos
                 .Where(x => 20 < x.Value.MapAreaId)

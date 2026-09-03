@@ -14,7 +14,7 @@ namespace EventMapHpViewer.Models
 {
     public class MapInfoProxy : MetroTrilithon.Mvvm.Notifier, IDisposable
     {
-        private readonly CompositeDisposable compositeDisposable = new CompositeDisposable();
+        private readonly MetroTrilithon.Lifetime.CompositeDisposable compositeDisposable = new MetroTrilithon.Lifetime.CompositeDisposable();
         #region Maps変更通知プロパティ
         private Maps _Maps;
 
@@ -116,7 +116,7 @@ namespace EventMapHpViewer.Models
                 }).ToArray();
         }
 
-        private MapData[] UpdateRank(SvData<map_select_eventmap_rank> data)
+        private MapData[] UpdateRank(Grabacr07.KanColleWrapper.SvData<map_select_eventmap_rank> data)
         {
             var rank = 0;
             int.TryParse(data.Request["api_rank"], out rank);

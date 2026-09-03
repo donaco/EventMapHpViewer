@@ -42,6 +42,14 @@ namespace MetroTrilithon.Lifetime
 
             return disposable;
         }
+
+        public static T AddTo<T>(this T disposable, ICollection<IDisposable> collection) where T : IDisposable
+        {
+            if (collection == null) disposable.Dispose();
+            else collection.Add(disposable);
+
+            return disposable;
+        }
     }
 
     public sealed class CompositeDisposable : ICollection<IDisposable>, IDisposable

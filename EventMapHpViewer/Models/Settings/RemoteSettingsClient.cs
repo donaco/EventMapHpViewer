@@ -133,41 +133,13 @@ namespace EventMapHpViewer.Models.Settings
         }
 
         /// <summary>
-        /// 本体のプロキシ設定を組み込んだHttpClientHandlerを返す。
+        /// HttpClientHandler を返す。
+        /// 本体の UpstreamProxySettings は廃止されたため、システムのプロキシ設定に従う。
         /// </summary>
         /// <returns></returns>
         private static HttpClientHandler GetProxyConfiguredHandler()
         {
-            var settings = KanColleClient.Current.Proxy.UpstreamProxySettings;
-
-            switch (settings.Type)
-            {
-                case ProxyType.DirectAccess:
-                    return new HttpClientHandler
-                    {
-                        UseProxy = false,
-                    };
-
-                case ProxyType.SpecificProxy:
-                    var host = settings.IsUseHttpProxyForAllProtocols ? settings.HttpHost : settings.HttpsHost;
-                    var port = settings.IsUseHttpProxyForAllProtocols ? settings.HttpPort : settings.HttpsPort;
-                    if (string.IsNullOrWhiteSpace(host))
-                    {
-                        return new HttpClientHandler { UseProxy = false };
-                    }
-
-                    return new HttpClientHandler
-                    {
-                        UseProxy = true,
-                        Proxy = new WebProxy($"{host}:{port}"),
-                    };
-
-                case ProxyType.SystemProxy:
-                    return new HttpClientHandler();
-
-                default:
-                    return new HttpClientHandler();
-            }
+            return new HttpClientHandler();
         }
 
         public static string BuildBossSettingsUrl(string url, int id, int rank, int gaugeNum)
