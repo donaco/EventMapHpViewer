@@ -2,19 +2,19 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Reactive.Disposables;
 using System.Reactive.Linq;
 using EventMapHpViewer.Models.Raw;
 using Grabacr07.KanColleWrapper;
 using Grabacr07.KanColleWrapper.Models;
-using EventMapHpViewer.Infrastructure.Mvvm;
+using MetroTrilithon.Lifetime;
+using MetroTrilithon.Mvvm;
 using Newtonsoft.Json.Linq;
 
 namespace EventMapHpViewer.Models
 {
-    public class MapInfoProxy : EventMapHpViewer.Infrastructure.Mvvm.Notifier, IDisposable
+    public class MapInfoProxy : MetroTrilithon.Mvvm.Notifier, IDisposable
     {
-        private readonly CompositeDisposable compositeDisposable = new CompositeDisposable();
+        private readonly MetroTrilithon.Lifetime.CompositeDisposable compositeDisposable = new MetroTrilithon.Lifetime.CompositeDisposable();
 
         /// <summary>
         /// battleresult 処理でゲージHPを更新した後に発生します。

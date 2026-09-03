@@ -5,11 +5,11 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using EventMapHpViewer.Infrastructure.Mvvm;
+using MetroTrilithon.Mvvm;
 
 namespace EventMapHpViewer.Models.Settings
 {
-    class BossSettingsWrapper: Notifier
+    class BossSettingsWrapper: MetroTrilithon.Mvvm.Notifier
     {
         private ObservableCollection<BossSetting> _List;
         public ObservableCollection<BossSetting> List

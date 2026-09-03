@@ -85,7 +85,6 @@ namespace EventMapHpViewer.Models.Settings
             }
             try
             {
-                Debug.WriteLine($"MapHP - GET: {url}");
                 var response = await client.GetAsync(url);
                 if (!response.IsSuccessStatusCode)
                 {
@@ -133,7 +132,8 @@ namespace EventMapHpViewer.Models.Settings
         }
 
         /// <summary>
-        /// 本体のプロキシ設定を組み込んだHttpClientHandlerを返す。
+        /// HttpClientHandler を返す。
+        /// 本体の UpstreamProxySettings は廃止されたため、システムのプロキシ設定に従う。
         /// </summary>
         /// <returns></returns>
         private static HttpClientHandler GetProxyConfiguredHandler()

@@ -1,7 +1,8 @@
 ﻿using System.Linq;
 using EventMapHpViewer.Models;
 using Grabacr07.KanColleWrapper;
-using EventMapHpViewer.Infrastructure.Mvvm;
+using MetroTrilithon.Lifetime;
+using MetroTrilithon.Mvvm;
 using System.Collections.Generic;
 using Grabacr07.KanColleWrapper.Models;
 using System;
