@@ -236,7 +236,6 @@ namespace EventMapHpViewer.ViewModels
                 }
 
                 this.IsPopupMode = true;
-                this.RaisePropertyChanged(nameof(this.IsPopupMode));
                 this.popupWindow = new ToolViewWindow
                 {
                     DataContext = this,
@@ -244,7 +243,6 @@ namespace EventMapHpViewer.ViewModels
                 this.popupWindow.Closed += (s, e) =>
                 {
                     this.IsPopupMode = false;
-                    this.RaisePropertyChanged(nameof(this.IsPopupMode));
                     this.popupWindow = null;
                 };
                 this.popupWindow.Show();
