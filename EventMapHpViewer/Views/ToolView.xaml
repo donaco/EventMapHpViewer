@@ -5,7 +5,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:viewModels="clr-namespace:EventMapHpViewer.ViewModels"
-             xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
              xmlns:kanColleWrapper="clr-namespace:Grabacr07.KanColleWrapper;assembly=KanColleWrapper"
              xmlns:metro2="clr-namespace:MetroTrilithon.UI.Controls;assembly=KanColleViewer.Controls"
              Background="{DynamicResource ThemeBrushKey}"
@@ -87,11 +87,17 @@
                         </Style.Triggers>
                     </Style>
                 </Border.Style>
-                <metro2:CallMethodButton Content="別ウィンドウで表示"
-                                         MethodName="OpenPopupWindow"
-                                         Width="120"
-                                         Height="30" />
-            </Border>
+
+    <Button Content="別ウィンドウで表示"
+            Width="120"
+            Height="30">
+        <i:Interaction.Triggers>
+            <i:EventTrigger EventName="Click">
+                <i:CallMethodAction TargetObject="{Binding}" MethodName="OpenPopupWindow"/>
+            </i:EventTrigger>
+        </i:Interaction.Triggers>
+    </Button>
+</Border>
 
           
             <Border Grid.Row="1"
