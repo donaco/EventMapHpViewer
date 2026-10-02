@@ -21,30 +21,26 @@ namespace EventMapHpViewer.ViewModels
         private ToolViewWindow popupWindow;
 
         #region IsTopMost変更通知プロパティ
-        private bool _IsTopMost = true;
-
         public bool IsTopMost
         {
-            get => this._IsTopMost;
+            get => field;
             set
             {
-                if (this._IsTopMost == value) return;
-                this._IsTopMost = value;
+                if (field == value) return;
+                field = value;
                 this.RaisePropertyChanged();
             }
-        }
+        } = true;
         #endregion
 
         #region IsPopupMode変更通知プロパティ
-        private bool _IsPopupMode;
-
         public bool IsPopupMode
         {
-            get => this._IsPopupMode;
+            get => field;
             set
             {
-                if (this._IsPopupMode == value) return;
-                this._IsPopupMode = value;
+                if (field == value) return;
+                field = value;
                 this.RaisePropertyChanged();
             }
         }
@@ -116,17 +112,14 @@ namespace EventMapHpViewer.ViewModels
         }
 
         #region Maps変更通知プロパティ
-        private MapViewModel[] _Maps;
-
         public MapViewModel[] Maps
         {
-            get
-            { return this._Maps; }
+            get => field;
             set
-            { 
-                if (this._Maps == value)
+            {
+                if (field == value)
                     return;
-                this._Maps = value;
+                field = value;
                 this.RaisePropertyChanged();
                 this.RaisePropertyChanged(nameof(this.ExistsTransportGauge));
             }
@@ -135,17 +128,14 @@ namespace EventMapHpViewer.ViewModels
 
 
         #region IsNoMap変更通知プロパティ
-        private bool _IsNoMap;
-
         public bool IsNoMap
         {
-            get
-            { return this._IsNoMap; }
+            get => field;
             set
-            { 
-                if (this._IsNoMap == value)
+            {
+                if (field == value)
                     return;
-                this._IsNoMap = value;
+                field = value;
                 this.RaisePropertyChanged();
             }
         }
@@ -153,17 +143,14 @@ namespace EventMapHpViewer.ViewModels
         
 
         #region TransportCapacity 変更通知プロパティ
-        private TransportCapacity _TransportCapacity;
-
         public TransportCapacity TransportCapacity
         {
-            get
-            { return this._TransportCapacity; }
+            get => field;
             set
             {
-                if (this._TransportCapacity.Equals(value))
+                if (field.Equals(value))
                     return;
-                this._TransportCapacity = value;
+                field = value;
                 this.RaisePropertyChanged();
             }
         }
