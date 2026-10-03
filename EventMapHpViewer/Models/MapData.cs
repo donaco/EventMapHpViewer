@@ -100,7 +100,6 @@ namespace EventMapHpViewer.Models
                         this.Id,
                         (int)this.Eventmap.SelectedRank,
                         this.GaugeNum ?? 0));  // GaugeNum がない場合 0 とみなす(リモート設定は空にしても 0 になるので)
-                client.CloseConnection();
 
                 if (remoteBossData == null)
                     return null;

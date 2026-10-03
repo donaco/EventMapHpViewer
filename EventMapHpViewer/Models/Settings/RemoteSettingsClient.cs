@@ -17,15 +17,15 @@ namespace EventMapHpViewer.Models.Settings
 {
     class RemoteSettingsClient
     {
-        private HttpClient client;
+        private static readonly Lazy<HttpClient> client = new Lazy<HttpClient>(CreateHttpClient);
+
+        private readonly SemaphoreSlim updateSemaphore = new SemaphoreSlim(1, 1);
 
         private readonly ConcurrentDictionary<string, DateTimeOffset> lastModified;
 
         private readonly ConcurrentDictionary<string, object> caches;
 
         private TimeSpan cacheTtl;
-
-        private bool updating;
 
         private static readonly object errorObject = new object();
 
@@ -54,15 +54,10 @@ namespace EventMapHpViewer.Models.Settings
         public async Task<T> GetSettings<T>(string url)
             where T : class
         {
-            DateTimeOffset lm;
-            lock (this.lastModified)
+            await this.updateSemaphore.WaitAsync().ConfigureAwait(false);
+            try
             {
-                while (this.updating)
-                {
-                    Thread.Sleep(100);
-                }
-
-                lm = this.lastModified.GetOrAdd(url, DateTimeOffset.MinValue);
+                var lm = this.lastModified.GetOrAdd(url, DateTimeOffset.MinValue);
 
                 if (DateTimeOffset.Now - lm < this.cacheTtl)
                 {
@@ -74,46 +69,39 @@ namespace EventMapHpViewer.Models.Settings
                             return null;
                     }
                 }
-                this.updating = true;
-            }
 
-            if (this.client == null)
-            {
-                this.client = new HttpClient(GetProxyConfiguredHandler());
-                this.client.DefaultRequestHeaders
-                    .TryAddWithoutValidation("User-Agent", $"{MapHpViewer.title}/{MapHpViewer.version}");
-            }
-            try
-            {
-                var response = await client.GetAsync(url);
-                if (!response.IsSuccessStatusCode)
+                try
                 {
-                    // 200 じゃなかった
+                    using var response = await client.Value.GetAsync(url).ConfigureAwait(false);
+                    if (!response.IsSuccessStatusCode)
+                    {
+                        // 200 じゃなかった
+                        this.CacheError(url, lm);
+                        return null;
+                    }
+
+                    var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    var parsed = JsonConvert.DeserializeObject<T>(json);
+                    this.lastModified.TryUpdate(url, DateTimeOffset.Now, lm);
+                    this.caches.AddOrUpdate(url, parsed, (_, __) => parsed);
+                    return parsed;
+                }
+                catch (HttpRequestException)
+                {
+                    // HTTP リクエストに失敗した
                     this.CacheError(url, lm);
                     return null;
                 }
-
-                var json = await response.Content.ReadAsStringAsync();
-                var parsed = JsonConvert.DeserializeObject<T>(json);
-                this.lastModified.TryUpdate(url, DateTimeOffset.Now, lm);
-                this.caches.AddOrUpdate(url, parsed, (_, __) => parsed);
-                return parsed;
-            }
-            catch (HttpRequestException)
-            {
-                // HTTP リクエストに失敗した
-                this.CacheError(url, lm);
-                return null;
-            }
-            catch
-            {
-                // 不正な JSON 等
-                this.CacheError(url, lm);
-                return null;
+                catch
+                {
+                    // 不正な JSON 等
+                    this.CacheError(url, lm);
+                    return null;
+                }
             }
             finally
             {
-                this.updating = false;
+                this.updateSemaphore.Release();
             }
         }
 
@@ -125,10 +113,12 @@ namespace EventMapHpViewer.Models.Settings
             this.caches.AddOrUpdate(url, errorObject, (_, __) => errorObject);
         }
 
-        public void CloseConnection()
+        private static HttpClient CreateHttpClient()
         {
-            this.client?.Dispose();
-            this.client = null;
+            var client = new HttpClient(GetProxyConfiguredHandler());
+            client.DefaultRequestHeaders
+                .TryAddWithoutValidation("User-Agent", $"{MapHpViewer.title}/{MapHpViewer.version}");
+            return client;
         }
 
         /// <summary>

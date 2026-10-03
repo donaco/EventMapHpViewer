@@ -22,17 +22,14 @@ namespace EventMapHpViewer.Models
         /// </summary>
         public event Action BattleResultApplied;
         #region Maps変更通知プロパティ
-        private Maps _Maps;
-
         public Maps Maps
         {
-            get
-            { return this._Maps; }
+            get => field;
             set
-            { 
-                if (this._Maps == value)
+            {
+                if (field == value)
                     return;
-                this._Maps = value;
+                field = value;
                 this.RaisePropertyChanged();
             }
         }
@@ -215,7 +212,6 @@ namespace EventMapHpViewer.Models
                 targetMap.Eventmap.MaxMapHp = maxHp.Value;
 
             this.BattleResultApplied?.Invoke();
-            this.RaisePropertyChanged(nameof(this.Maps));
         }
 
         public void Dispose()

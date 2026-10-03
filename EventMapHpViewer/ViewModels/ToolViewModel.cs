@@ -50,6 +50,8 @@ namespace EventMapHpViewer.ViewModels
         {
             this.mapInfoProxy = proxy;
             this.CompositeDisposable.Add(proxy);
+            System.Reactive.Disposables.Disposable.Create(this.ClearFleetHandlers)
+                .AddTo(this.CompositeDisposable);
 
             if (this.mapInfoProxy == null) return;
 
@@ -167,22 +169,29 @@ namespace EventMapHpViewer.ViewModels
 
         private void UpdateFleets()
         {
-            foreach (var handler in fleetHandlers)
-            {
-                handler.Dispose();
-            }
-            this.fleetHandlers.Clear();
+            this.ClearFleetHandlers();
             foreach (var fleet in KanColleClient.Current.Homeport.Organization.Fleets.Values)
             {
-                this.fleetHandlers.Add(fleet.Subscribe(nameof(fleet.Ships), this.UpdateTransportCapacity, false));
+                this.fleetHandlers.Add(fleet.Subscribe(nameof(fleet.Ships), this.UpdateFleets, false));
                 foreach (var ship in fleet.Ships)
                 {
-                    if (this.handledShips.Contains(ship)) return;
+                    if (this.handledShips.Contains(ship)) continue;
                     this.fleetHandlers.Add(ship.Subscribe(nameof(ship.Slots), this.UpdateTransportCapacity, false));
                     this.fleetHandlers.Add(ship.Subscribe(nameof(ship.Situation), this.UpdateTransportCapacity, false));
                     this.handledShips.Add(ship);
                 }
             }
+            this.UpdateTransportCapacity();
+        }
+
+        private void ClearFleetHandlers()
+        {
+            foreach (var handler in fleetHandlers)
+            {
+                handler.Dispose();
+            }
+            this.fleetHandlers.Clear();
+            this.handledShips.Clear();
         }
 
         private void UpdateTransportCapacity()

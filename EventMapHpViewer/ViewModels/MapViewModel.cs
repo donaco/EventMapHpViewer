@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using EventMapHpViewer.Models;
@@ -23,17 +25,14 @@ namespace EventMapHpViewer.ViewModels
         }
 
         #region MapNumber変更通知プロパティ
-        private string _MapNumber;
-
         public string MapNumber
         {
-            get
-            { return this._MapNumber; }
+            get => field;
             set
             {
-                if (this._MapNumber == value)
+                if (field == value)
                     return;
-                this._MapNumber = value;
+                field = value;
                 this.RaisePropertyChanged();
             }
         }
@@ -41,17 +40,14 @@ namespace EventMapHpViewer.ViewModels
 
 
         #region Name変更通知プロパティ
-        private string _Name;
-
         public string Name
         {
-            get
-            { return this._Name; }
+            get => field;
             set
             {
-                if (this._Name == value)
+                if (field == value)
                     return;
-                this._Name = value;
+                field = value;
                 this.RaisePropertyChanged();
             }
         }
@@ -59,17 +55,14 @@ namespace EventMapHpViewer.ViewModels
 
 
         #region AreaName変更通知プロパティ
-        private string _AreaName;
-
         public string AreaName
         {
-            get
-            { return this._AreaName; }
+            get => field;
             set
             {
-                if (this._AreaName == value)
+                if (field == value)
                     return;
-                this._AreaName = value;
+                field = value;
                 this.RaisePropertyChanged();
             }
         }
@@ -77,17 +70,14 @@ namespace EventMapHpViewer.ViewModels
 
 
         #region Current変更通知プロパティ
-        private string _Current;
-
         public string Current
         {
-            get
-            { return this._Current; }
+            get => field;
             set
             {
-                if (this._Current == value)
+                if (field == value)
                     return;
-                this._Current = value;
+                field = value;
                 this.RaisePropertyChanged();
             }
         }
@@ -95,17 +85,14 @@ namespace EventMapHpViewer.ViewModels
 
 
         #region Max変更通知プロパティ
-        private string _Max;
-
         public string Max
         {
-            get
-            { return this._Max; }
+            get => field;
             set
             {
-                if (this._Max == value)
+                if (field == value)
                     return;
-                this._Max = value;
+                field = value;
                 this.RaisePropertyChanged();
             }
         }
@@ -113,17 +100,14 @@ namespace EventMapHpViewer.ViewModels
 
 
         #region SelectedRank変更通知プロパティ
-        private string _SelectedRank;
-
         public string SelectedRank
         {
-            get
-            { return this._SelectedRank; }
+            get => field;
             set
             {
-                if (this._SelectedRank == value)
+                if (field == value)
                     return;
-                this._SelectedRank = value;
+                field = value;
                 this.RaisePropertyChanged();
             }
         }
@@ -133,17 +117,14 @@ namespace EventMapHpViewer.ViewModels
             => string.IsNullOrEmpty(this.SelectedRank) ? Visibility.Collapsed : Visibility.Visible;
 
         #region RemainingCountMin 変更通知プロパティ
-        private string _RemainingCountMin;
-
         public string RemainingCountMin
         {
-            get
-            { return this._RemainingCountMin; }
+            get => field;
             set
             {
-                if (this._RemainingCountMin == value)
+                if (field == value)
                     return;
-                this._RemainingCountMin = value;
+                field = value;
                 this.RaisePropertyChanged();
                 this.RaisePropertyChanged(nameof(this.IsSingleRemainingCount));
             }
@@ -151,17 +132,14 @@ namespace EventMapHpViewer.ViewModels
         #endregion
 
         #region RemainingCountMax 変更通知プロパティ
-        private string _RemainingCountMax;
-
         public string RemainingCountMax
         {
-            get
-            { return this._RemainingCountMax; }
+            get => field;
             set
             {
-                if (this._RemainingCountMax == value)
+                if (field == value)
                     return;
-                this._RemainingCountMax = value;
+                field = value;
                 this.RaisePropertyChanged();
                 this.RaisePropertyChanged(nameof(this.IsSingleRemainingCount));
             }
@@ -173,17 +151,14 @@ namespace EventMapHpViewer.ViewModels
 
 
         #region RemainingCountTransportS変更通知プロパティ
-        private string _RemainingCountTransportS;
-
         public string RemainingCountTransportS
         {
-            get
-            { return this._RemainingCountTransportS; }
+            get => field;
             set
             {
-                if (this._RemainingCountTransportS == value)
+                if (field == value)
                     return;
-                this._RemainingCountTransportS = value;
+                field = value;
                 this.RaisePropertyChanged();
             }
         }
@@ -191,17 +166,14 @@ namespace EventMapHpViewer.ViewModels
 
 
         #region IsCleared変更通知プロパティ
-        private bool _IsCleared;
-
         public bool IsCleared
         {
-            get
-            { return this._IsCleared; }
+            get => field;
             set
             {
-                if (this._IsCleared == value)
+                if (field == value)
                     return;
-                this._IsCleared = value;
+                field = value;
                 this.RaisePropertyChanged();
             }
         }
@@ -209,17 +181,14 @@ namespace EventMapHpViewer.ViewModels
 
 
         #region GaugeColor変更通知プロパティ
-        private SolidColorBrush _GaugeColor;
-
         public SolidColorBrush GaugeColor
         {
-            get
-            { return this._GaugeColor; }
+            get => field;
             set
             {
-                if (Equals(this._GaugeColor, value))
+                if (Equals(field, value))
                     return;
-                this._GaugeColor = value;
+                field = value;
                 this.RaisePropertyChanged();
             }
         }
@@ -227,17 +196,14 @@ namespace EventMapHpViewer.ViewModels
 
 
         #region IsRankSelected変更通知プロパティ
-        private bool _IsRankSelected;
-
         public bool IsRankSelected
         {
-            get
-            { return this._IsRankSelected; }
+            get => field;
             set
             {
-                if (this._IsRankSelected == value)
+                if (field == value)
                     return;
-                this._IsRankSelected = value;
+                field = value;
                 this.RaisePropertyChanged();
             }
         }
@@ -245,17 +211,14 @@ namespace EventMapHpViewer.ViewModels
 
 
         #region IsLoading変更通知プロパティ
-        private bool _IsLoading;
-
         public bool IsLoading
         {
-            get
-            { return this._IsLoading; }
+            get => field;
             set
             {
-                if (this._IsLoading == value)
+                if (field == value)
                     return;
-                this._IsLoading = value;
+                field = value;
                 this.RaisePropertyChanged();
                 this.RaiseVisibilityChanged();
             }
@@ -264,17 +227,14 @@ namespace EventMapHpViewer.ViewModels
 
 
         #region IsSupported変更通知プロパティ
-        private bool _IsSupported;
-
         public bool IsSupported
         {
-            get
-            { return this._IsSupported; }
+            get => field;
             set
             {
-                if (this._IsSupported == value)
+                if (field == value)
                     return;
-                this._IsSupported = value;
+                field = value;
                 this.RaisePropertyChanged();
                 this.RaiseVisibilityChanged();
             }
@@ -285,17 +245,14 @@ namespace EventMapHpViewer.ViewModels
             => !this.IsLoading && !this.IsSupported ? Visibility.Visible : Visibility.Collapsed;
 
         #region IsInfinity変更通知プロパティ
-        private bool _IsInfinity;
-
         public bool IsInfinity
         {
-            get
-            { return this._IsInfinity; }
+            get => field;
             set
             {
-                if (this._IsInfinity == value)
+                if (field == value)
                     return;
-                this._IsInfinity = value;
+                field = value;
                 this.RaisePropertyChanged();
                 this.RaiseVisibilityChanged();
             }
@@ -309,23 +266,21 @@ namespace EventMapHpViewer.ViewModels
             => !this.IsLoading && this.IsSupported && !this.IsInfinity ? Visibility.Visible : Visibility.Collapsed;
 
         #region GaugeType変更通知プロパティ
-        private GaugeType _GaugeType;
-
         public GaugeType GaugeType
         {
-            get
-            { return this._GaugeType; }
+            get => field;
             set
             {
-                if (this._GaugeType == value)
+                if (field == value)
                     return;
-                this._GaugeType = value;
+                field = value;
                 this.RaisePropertyChanged();
             }
         }
         #endregion
 
         private MapData _source;
+        private int updateVersion;
 
         public MapViewModel(MapData info)
         {
@@ -353,39 +308,59 @@ namespace EventMapHpViewer.ViewModels
 
         public void UpdateRemainingCount()
         {
+            _ = this.UpdateRemainingCountAsync();
+        }
+
+        private async Task UpdateRemainingCountAsync()
+        {
+            var version = Interlocked.Increment(ref this.updateVersion);
+            RemainingCount remainingCount;
             try
             {
-                this._source.GetRemainingCount()
-                    .ContinueWith(t => this.Update(t.Result));
+                remainingCount = await this._source.GetRemainingCount().ConfigureAwait(false);
             }
-            catch (AggregateException e)
+            catch (Exception e)
+            {
+                Debug.WriteLine(e);
+                remainingCount = null;
+            }
+
+            if (version != Volatile.Read(ref this.updateVersion)) return;
+
+            var dispatcher = Application.Current?.Dispatcher;
+            if (dispatcher == null) return;
+
+            try
+            {
+                await dispatcher.InvokeAsync(() => this.Update(remainingCount, version)).Task.ConfigureAwait(false);
+            }
+            catch (Exception e)
             {
                 Debug.WriteLine(e);
             }
         }
 
-        private void Update(RemainingCount remainingCount)
+        private void Update(RemainingCount remainingCount, int version)
         {
-            Application.Current.Dispatcher.Invoke(() =>
+            if (version != Volatile.Read(ref this.updateVersion)) return;
+
+            // UI スレッドで最新値に更新（battleresult 後の NowMapHp を反映）
+            this.Current = this._source.Current?.ToString() ?? "???";
+            this.Max = this._source.Max?.ToString() ?? "???";
+
+            this.IsLoading = false;
+            this.IsSupported = remainingCount != null;
+            if (!this.IsSupported)
             {
-                // UI スレッドで最新値に更新（battleresult 後の NowMapHp を反映）
-                this.Current = this._source.Current?.ToString() ?? "???";
-                this.Max = this._source.Max?.ToString() ?? "???";
+                this.GaugeColor = red;
+                return;
+            }
 
-                this.IsLoading = false;
-                this.IsSupported = remainingCount != null;
-                if (!this.IsSupported)
-                {
-                    this.GaugeColor = red;
-                    return;
-                }
-
-                this.RemainingCountMin = remainingCount.Min.ToString();
-                this.RemainingCountMax = remainingCount.Max.ToString();
-                this.RemainingCountTransportS = this._source.GetRemainingCountTransportS().ToString();
-                this.IsInfinity = remainingCount == RemainingCount.MaxValue;
-                this.GaugeColor = remainingCount.Min < 2 ? red : green;
-            });
+            this.RemainingCountMin = remainingCount.Min.ToString();
+            this.RemainingCountMax = remainingCount.Max.ToString();
+            this.RemainingCountTransportS = this._source.GetRemainingCountTransportS().ToString();
+            this.IsInfinity = remainingCount == RemainingCount.MaxValue;
+            this.GaugeColor = remainingCount.Min < 2 ? red : green;
         }
 
         private void RaiseVisibilityChanged()
