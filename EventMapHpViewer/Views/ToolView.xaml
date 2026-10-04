@@ -88,15 +88,10 @@
                     </Style>
                 </Border.Style>
 
-    <Button Content="別ウィンドウで表示"
-            Width="120"
-            Height="30">
-        <i:Interaction.Triggers>
-            <i:EventTrigger EventName="Click">
-                <i:CallMethodAction TargetObject="{Binding}" MethodName="OpenPopupWindow"/>
-            </i:EventTrigger>
-        </i:Interaction.Triggers>
-    </Button>
+    <metro2:CallMethodButton Content="別ウィンドウで表示"
+                             MethodName="OpenPopupWindow"
+                             Width="120"
+                             Height="30" />
 </Border>
 
           
