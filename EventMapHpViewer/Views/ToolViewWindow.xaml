@@ -16,6 +16,7 @@
 		Background="{DynamicResource ThemeBrushKey}"
 		Foreground="{DynamicResource ActiveForegroundBrushKey}"
 		FontFamily="{DynamicResource DefaultFontFamilyKey}"
+		IsRestoringWindowPlacement="True"
 		SnapsToDevicePixels="True"
 		Topmost="{Binding IsTopMost, Mode=TwoWay}"
 		TextOptions.TextFormattingMode="Display">
